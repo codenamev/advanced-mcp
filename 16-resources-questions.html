@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slide 16 - Resources & Questions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+      color: var(--text-primary);
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    .slide-counter {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--text-accent);
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 1.5rem;
+      font-family: 'Courier New', 'Monaco', monospace;
+    }
+
+    .subtitle-accent {
+      font-size: 1.4rem;
+      color: var(--neon-magenta);
+      margin-left: 0.5rem;
+    }
+
+    .resources-section,
+    .community-section,
+    .demo-summary,
+    .questions-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .resources-section h2,
+    .community-section h2,
+    .demo-summary h2,
+    .questions-section h2 {
+      font-size: 2rem;
+      color: var(--text-accent);
+      margin-bottom: 1rem;
+    }
+
+    .resource-grid,
+    .community-grid,
+    .demo-highlights,
+    .getting-started,
+    .qa-setup,
+    .next-steps {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .resource-grid,
+    .community-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-gap: 1.5rem;
+    }
+
+    .resource-link {
+      border-left: 3px solid var(--neon-green);
+      padding-left: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .resource-link strong a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+    }
+
+    .resource-link strong a:hover {
+      text-decoration: underline;
+    }
+
+    .community-grid > div {
+      border-left: 3px solid var(--neon-amber);
+      padding-left: 1rem;
+      font-size: 0.95rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      color: var(--neon-green);
+      margin-bottom: 0.5rem;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      white-space: pre;
+    }
+
+    .code-demo::before {
+      content: '> TERMINAL';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .ascii-block {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-magenta);
+      border-radius: 4px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      color: var(--neon-magenta);
+      white-space: pre;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      position: relative;
+    }
+
+    .ascii-block::before {
+      content: '> Q&A TERMINAL';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .demo-highlights code {
+      display: block;
+      white-space: pre;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      font-size: 0.9rem;
+    }
+
+    .demo-highlights ul {
+      list-style: none;
+      margin-top: 0.5rem;
+    }
+
+    .demo-highlights li {
+      margin: 0.25rem 0;
+    }
+
+    .getting-started h3 {
+      margin-top: 1rem;
+    }
+
+    .getting-started ul {
+      margin-left: 1.2rem;
+      margin-top: 0.4rem;
+    }
+
+    .getting-started li {
+      font-size: 0.98rem;
+      margin: 0.2rem 0;
+    }
+
+    .qa-setup h3 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .qa-setup ul {
+      margin-left: 1.2rem;
+      margin-top: 0.4rem;
+    }
+
+    .qa-setup li {
+      margin: 0.2rem 0;
+      font-size: 0.96rem;
+    }
+
+    .next-steps ul {
+      margin-left: 1.2rem;
+      margin-top: 0.4rem;
+    }
+
+    .next-steps li {
+      margin: 0.2rem 0;
+      font-size: 0.96rem;
+    }
+
+    .slide-footer {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .thank-you .accent-text {
+      font-size: 1.6rem;
+      color: var(--neon-amber);
+      text-shadow: var(--glow-green);
+      font-weight: bold;
+    }
+
+    .thank-you .contact-info {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .slide-navigation {
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 1rem 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.8rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-glow {
+      text-shadow: var(--glow-cyan);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      color: var(--neon-amber);
+      margin-left: 0.5rem;
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 255, 0.03) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.15;
+      z-index: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .slide-content { padding: 1.5rem 2rem; }
+      .slide-title { font-size: 2.4rem; }
+    }
+
+    @media (max-width: 768px) {
+      .slide-content { padding: 1rem 1.5rem; }
+      .slide-title { font-size: 2rem; }
+      .slide-header, .slide-navigation { padding: 0.8rem 1rem; }
+      .nav-controls { flex-direction: column; align-items: stretch; }
+      .progress-container { order: -1; margin-bottom: 0.8rem; }
+      .nav-btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">16</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content slide-enter">
+      <div class="slide-header">
+        <h1 class="slide-title">
+          &gt; RESOURCES &amp; QUESTIONS <span class="subtitle-accent">[CONNECT &amp; LEARN]</span>
+        </h1>
+      </div>
+
+      <div class="resources-section">
+        <h2>📚 ESSENTIAL RESOURCES</h2>
+        <div class="resource-grid">
+          <div>
+            <h3>🌐 OFFICIAL DOCUMENTATION</h3>
+            <div class="resource-link">
+              <strong><a href="https://modelcontextprotocol.info" target="_blank" rel="noopener noreferrer">modelcontextprotocol.info</a></strong>
+              <br />Complete MCP specification, guides, and tutorials
+            </div>
+          </div>
+
+          <div>
+            <h3>🔧 REFERENCE IMPLEMENTATIONS</h3>
+            <div class="resource-link">
+              <strong><a href="https://github.com/model-context/reference-servers" target="_blank" rel="noopener noreferrer">GitHub: model-context/reference-servers</a></strong>
+              <br />Production-ready server examples in multiple languages
+            </div>
+          </div>
+
+          <div>
+            <h3>⚡ EVERYTHING SERVER</h3>
+            <div class="resource-link">
+              <strong><a href="https://www.npmjs.com/package/@modelcontextprotocol/server-everything" target="_blank" rel="noopener noreferrer">Everything Server on npm</a></strong>
+              <br />Zero-setup demonstration server - perfect for learning
+            </div>
+          </div>
+
+          <div>
+            <h3>🛠️ GOOGLE TOOLBOX</h3>
+            <div class="resource-link">
+              <strong><a href="https://github.com/google/genai-toolbox" target="_blank" rel="noopener noreferrer">genai-toolbox (Google)</a></strong>
+              <br />Enterprise-grade MCP server collection
+            </div>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 2rem;">🔍 DEVELOPMENT TOOLS</h2>
+        <div class="code-demo">
+# Quick Start Commands
+$ npx -y @modelcontextprotocol/server-everything
+$ npx -y @modelcontextprotocol/inspector
+$ pip install mcp
+$ go get github.com/modelcontextprotocol/go-sdk
+
+# Live Exploration
+$ mcp-inspector  # Real-time server inspection
+$ claude-desktop # Connect to multiple servers
+        </div>
+      </div>
+
+      <div class="community-section">
+        <h2>🤝 COMMUNITY &amp; SUPPORT</h2>
+        <div class="community-grid">
+          <div>
+            <h3>💬 DISCUSSION FORUMS</h3>
+            <p>Stack Overflow, GitHub Discussions, Reddit communities</p>
+          </div>
+          <div>
+            <h3>📖 LEARNING RESOURCES</h3>
+            <p>Video tutorials, blog posts, case studies, workshops</p>
+          </div>
+          <div>
+            <h3>🏢 ENTERPRISE SUPPORT</h3>
+            <p>Professional services, consulting, custom implementations</p>
+          </div>
+          <div>
+            <h3>🎯 SPECIAL INTEREST GROUPS</h3>
+            <p>Industry-specific implementations, use case sharing</p>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 2rem;">🚀 GET STARTED TODAY</h2>
+        <div class="getting-started">
+          <h3>1️⃣ EXPLORE</h3>
+          <div class="code-demo" style="margin-top: 0.5rem;">
+$ npx -y @modelcontextprotocol/server-everything
+$ npx -y @modelcontextprotocol/inspector
+          </div>
+
+          <h3>2️⃣ LEARN</h3>
+          <ul>
+            <li>Run through Everything Server examples</li>
+            <li>Inspect tool schemas and resource structures</li>
+            <li>Test prompt templates and sampling workflows</li>
+          </ul>
+
+          <h3>3️⃣ BUILD</h3>
+          <ul>
+            <li>Create your first MCP server</li>
+            <li>Implement tools for your domain</li>
+            <li>Add resources for your data sources</li>
+          </ul>
+
+          <h3>4️⃣ DEPLOY</h3>
+          <ul>
+            <li>Containerize your server</li>
+            <li>Add security and monitoring</li>
+            <li>Scale to production workloads</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-summary">
+        <h2>🎮 TODAY'S DEMO RECAP</h2>
+        <div class="demo-highlights">
+          <h3>✅ LIVE DEMONSTRATIONS COMPLETED</h3>
+          <code>
+├── Everything Server Launch &amp; Inspection
+├── Tool Execution (echo, add, longRunningOperation)
+├── Resource Subscription (test://static/resource/42)
+├── Prompt Templates (resource_prompt with dynamic args)
+├── AI Sampling (sampleLLM bidirectional workflows)
+├── Multi-Server Architecture (concurrent connections)
+├── Security Patterns (printEnv safety analysis)
+├── Performance Monitoring (listRoots scoping demo)
+└── End-to-End Workflows (multi-modal combinations)
+          </code>
+
+          <h3 style="margin-top: 1.5rem;">🔗 CONNECTION DETAILS</h3>
+          <ul>
+            <li><strong>Everything Server</strong>: <code>npx -y @modelcontextprotocol/server-everything</code></li>
+            <li><strong>MCP Inspector</strong>: Real-time exploration and testing</li>
+            <li><strong>Multi-Server Setup</strong>: Git + Filesystem + Database integration</li>
+            <li><strong>Production Patterns</strong>: Security, scaling, monitoring examples</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="questions-section">
+        <h2>❓ QUESTIONS &amp; DISCUSSION</h2>
+        <div class="qa-setup">
+          <div class="ascii-block">
+┌─────────────────────────────────────────────────────────────┐
+│                     Q&amp;A SESSION                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  🎤 OPEN FLOOR FOR QUESTIONS                               │
+│                                                             │
+│  Topics we can dive deeper into:                           │
+│  ├── Advanced security patterns                            │
+│  ├── Specific use case implementations                     │
+│  ├── Performance optimization strategies                   │
+│  ├── Integration with existing systems                     │
+│  ├── Troubleshooting common issues                        │
+│  └── Future roadmap and feature requests                  │
+│                                                             │
+│  💡 Share your use cases and challenges!                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+          </div>
+
+          <h3>Discussion Topics:</h3>
+          <ul>
+            <li><strong>Architecture Questions</strong>: Multi-server patterns, scaling strategies</li>
+            <li><strong>Implementation Help</strong>: Specific use cases, technical challenges</li>
+            <li><strong>Security Concerns</strong>: Enterprise deployment, compliance requirements</li>
+            <li><strong>Performance Optimization</strong>: Bottlenecks, monitoring, tuning</li>
+            <li><strong>Integration Patterns</strong>: Legacy systems, API gateways, workflows</li>
+            <li><strong>Future Development</strong>: Roadmap features, community contributions</li>
+          </ul>
+        </div>
+
+        <h2 style="margin-top: 2rem;">🚀 NEXT STEPS</h2>
+        <div class="next-steps">
+          <ul>
+            <li><strong>Try the demos</strong> yourself with Everything Server</li>
+            <li><strong>Join the community</strong> discussions and forums</li>
+            <li><strong>Start building</strong> your first MCP server</li>
+            <li><strong>Share your experience</strong> and learnings with others</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <div class="thank-you">
+          <span class="accent-text">THANK YOU!</span>
+          <br />
+          <span class="contact-info">🤝 Let's build the future of AI integration together</span>
+        </div>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" onclick="window.location.href='15-recap-takeaways'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span class="progress-bar">████████████████</span>]
+            <span class="progress-percent">100%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" onclick="window.location.href='index'">
+          <span class="btn-glow">INDEX ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Basic keyboard navigation wiring for this standalone slide
+    function navigateSlide(direction) {
+      if (direction === 'next') {
+        window.location.href = 'index';
+      } else if (direction === 'prev') {
+        window.location.href = '15-recap-takeaways';
+      }
+    }
+
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ': // space
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slide 10 - Live Demo: Everything MCP + Inspector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0d1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00ffff;
+      --neon-green: #00ff41;
+      --neon-magenta: #ff00ff;
+      --neon-amber: #ffb000;
+
+      /* Text Colors */
+      --text-primary: #e6e6e6;
+      --text-secondary: #b3b3b3;
+      --text-accent: #00ffff;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+      --glow-green: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+      color: var(--text-primary);
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      font-family: 'Monaco', monospace;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-size: 1rem;
+    }
+
+    .slide-counter {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .slide-counter span {
+      color: var(--neon-cyan);
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 2.5rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 1.5rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .slide-title .subtitle-accent {
+      color: var(--neon-amber);
+      font-size: 1.2rem;
+      margin-left: 0.5rem;
+    }
+
+    .slide-subtitle {
+      font-size: 1.5rem;
+      color: var(--neon-green);
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      color: var(--text-accent);
+      margin-bottom: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      color: var(--neon-green);
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    p, li {
+      font-size: 1rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0, 255, 255, 0.2);
+      color: var(--text-secondary);
+    }
+
+    .live-indicator {
+      color: var(--neon-magenta);
+    }
+
+    .next-indicator {
+      color: var(--neon-green);
+    }
+
+    .live-indicator::before {
+      content: '● ';
+      color: var(--neon-magenta);
+      text-shadow: 0 0 10px var(--neon-magenta);
+    }
+
+    /* Code & terminal blocks */
+    pre {
+      margin: 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.2rem 1.5rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .code-demo::before {
+      content: '> LIVE DEMO';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .code-demo.terminal::before {
+      content: '> TERMINAL';
+    }
+
+    .code-demo.ascii::before {
+      content: '> INSPECTOR VIEW';
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+      font-weight: bold;
+      color: var(--neon-amber);
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    .demo-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-section h3 {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .benefits-grid h3 {
+      margin-top: 0;
+    }
+
+    .benefits-grid p {
+      margin-top: 0.25rem;
+    }
+
+    /* Navigation footer */
+    .slide-navigation {
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 0.8rem 2.5rem;
+      background: rgba(0, 0, 0, 0.7);
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.8rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .nav-btn .btn-glow {
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      margin-left: 0.5rem;
+      color: var(--neon-cyan);
+    }
+
+    /* Overlays */
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+      opacity: 0.7;
+    }
+
+    @keyframes scanline-move {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(4px);
+      }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from {
+        transform: translateX(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Layout groupings specific to this slide */
+    .demo-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .demo-setup,
+    .inspector-interface,
+    .demo-checklist,
+    .live-benefits,
+    .demo-notes {
+      margin-top: 1.5rem;
+    }
+
+    .demo-checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .safe-exploration-block {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1rem 1.2rem;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      margin-top: 0.8rem;
+      white-space: pre-line;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 3rem;
+      }
+
+      .slide-title {
+        font-size: 2.1rem;
+      }
+
+      .demo-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-header {
+        padding: 0.8rem 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+      }
+
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+
+      .slide-title {
+        font-size: 1.8rem;
+      }
+
+      .slide-navigation {
+        padding: 0.8rem 1.2rem;
+      }
+
+      .nav-btn {
+        padding: 0.6rem 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container slide-enter">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">10</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content">
+      <div class="slide-header">
+        <h1 class="slide-title">
+          &gt; LIVE DEMO: INSPECTOR + SERVER <span class="subtitle-accent">[HANDS-ON]</span>
+        </h1>
+      </div>
+
+      <div class="demo-layout">
+        <!-- Left: Zero-setup + Inspector interface -->
+        <section class="demo-left">
+          <div class="demo-setup">
+            <h2>▶ ZERO-SETUP EXPLORATION PLATFORM</h2>
+            <div class="concept-highlight">
+              <strong>Launch with npx, inspect in real-time, safe for live exploration</strong>
+            </div>
+            <div class="code-demo terminal">
+              <pre><code>$ npx -y @modelcontextprotocol/server-everything
+[STARTING] Everything MCP Server v1.0.0
+[LOADED] 8 tools, 4 resources, 3 prompts, 2 sampling endpoints
+[TRANSPORT] stdio ready for connections
+[SAFE] No destructive operations - perfect for demos</code></pre>
+            </div>
+          </div>
+
+          <div class="inspector-interface">
+            <h2>🎮 MCP INSPECTOR WALKTHROUGH</h2>
+            <div class="code-demo ascii">
+              <pre><code>┌──────────────────────────────────────────────────────────────────┐
+│                      MCP INSPECTOR INTERFACE                     │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  TABS: [Tools] [Resources] [Prompts] [Sampling] [Connection]     │
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────────┐ │
+│  │ TOOLS TAB                                                   │ │
+│  │ ├── echo               │ Simple echo demonstration          │ │
+│  │ ├── add                │ Add two numbers together           │ │
+│  │ ├── longRunningOp      │ Async streaming demo               │ │
+│  │ ├── annotatedMessage   │ Structured metadata example       │ │
+│  │ ├── getTinyImage       │ Generate small images              │ │
+│  │ ├── sampleLLM          │ Server-asks-model demonstration    │ │
+│  │ ├── printEnv           │ Environment variable display       │ │
+│  │ └── complex_tool       │ Multi-parameter advanced tool      │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+│  [EXECUTE] [VIEW SCHEMA] [TEST PARAMETERS] [MONITOR]             │
+└──────────────────────────────────────────────────────────────────┘</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right: Checklist -->
+        <section class="demo-right demo-checklist">
+          <h2>✅ INTERACTIVE DEMONSTRATION CHECKLIST</h2>
+          <div class="demo-checklist-grid">
+            <div class="demo-section">
+              <h3>🔧 TOOLS EXPLORATION</h3>
+              <div class="code-demo terminal">
+                <pre><code>[ ] Call `echo` → verify basic functionality
+[ ] Call `add(5, 3)` → test parameter validation
+[ ] Execute `longRunningOperation(10, 5)` → watch streaming
+[ ] Try `annotatedMessage` → examine structured metadata</code></pre>
+              </div>
+            </div>
+
+            <div class="demo-section">
+              <h3>📚 RESOURCES INSPECTION</h3>
+              <div class="code-demo terminal">
+                <pre><code>[ ] Browse `test://static/resource/42` → observe auto-updates
+[ ] Subscribe to resource → watch real-time changes
+[ ] Check resource metadata → understand structure
+[ ] View resource history → track update timeline</code></pre>
+              </div>
+            </div>
+
+            <div class="demo-section">
+              <h3>💬 PROMPTS TESTING</h3>
+              <div class="code-demo terminal">
+                <pre><code>[ ] Load `simple_prompt` → basic template example
+[ ] Execute `resource_prompt` → dynamic argument injection
+[ ] Try `complex_prompt` → multi-modal demonstration
+[ ] Modify arguments → see template flexibility</code></pre>
+              </div>
+            </div>
+
+            <div class="demo-section">
+              <h3>🤖 SAMPLING DEMOS</h3>
+              <div class="code-demo terminal">
+                <pre><code>[ ] Call `sampleLLM` → server-asks-model pattern
+[ ] Watch bidirectional AI workflow
+[ ] Observe response validation
+[ ] Test different prompts → see AI integration</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Real-time exploration benefits -->
+      <section class="live-benefits">
+        <h2>▶ REAL-TIME EXPLORATION BENEFITS</h2>
+        <div class="benefits-grid">
+          <div>
+            <h3>👁️ VISUAL INSPECTION</h3>
+            <p>See tool schemas, resource structures, prompt templates.</p>
+          </div>
+          <div>
+            <h3>⚡ IMMEDIATE FEEDBACK</h3>
+            <p>Execute tools and see results instantly.</p>
+          </div>
+          <div>
+            <h3>🔍 DEBUG CAPABILITIES</h3>
+            <p>Monitor requests, responses, and errors.</p>
+          </div>
+          <div>
+            <h3>📊 PERFORMANCE MONITORING</h3>
+            <p>Track response times and resource usage.</p>
+          </div>
+        </div>
+
+        <h2>▶ SAFE EXPLORATION</h2>
+        <div class="safe-exploration-block">
+✅ No destructive operations
+✅ Isolated test environment
+✅ Easy reset and restart
+✅ Perfect for learning and demos
+        </div>
+      </section>
+
+      <!-- Key demonstration points -->
+      <section class="demo-notes">
+        <h2>📝 KEY DEMONSTRATION POINTS</h2>
+        <div class="demo-note">
+          <strong>Interactive Elements:</strong>
+          <ul>
+            <li>Real-time tool execution and results</li>
+            <li>Resource subscription and auto-updates</li>
+            <li>Template argument modification</li>
+            <li>Bidirectional AI sampling workflows</li>
+            <li>Error handling and validation</li>
+            <li>Performance and monitoring insights</li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="slide-footer">
+        <span class="live-indicator">LIVE DEMO ACTIVE</span>
+        <span class="next-indicator">▶ NEXT: Tool Design Patterns</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='09-multi-server'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar" class="progress-bar">██████████░░░░░░</span>]
+            <span id="progress-percent" class="progress-percent">62%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='11-tool-patterns'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <!-- Cyberpunk effects overlay -->
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Basic navigation functionality hook (can be extended)
+    function navigateSlide(direction) {
+      const current = 10; // this slide index
+      const total = 16;
+      let target = current;
+
+      if (direction === 'next') {
+        target = Math.min(total, current + 1);
+        window.location.href = '11-tool-patterns';
+      } else if (direction === 'prev') {
+        target = Math.max(1, current - 1);
+        window.location.href = '09-multi-server';
+      }
+
+      // Additional logic (updating counters/progress) would go here
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ': // space
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

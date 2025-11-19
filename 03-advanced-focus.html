@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide 03 - Advanced Focus Today</title>
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0d1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00ffff;
+      --neon-green: #00ff41;
+      --neon-magenta: #ff00ff;
+      --neon-amber: #ffb000;
+
+      /* Text Colors */
+      --text-primary: #e6e6e6;
+      --text-secondary: #b3b3b3;
+      --text-accent: #00ffff;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+      --glow-green: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      color: var(--text-primary);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.7);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 0.08em;
+      font-size: 1rem;
+    }
+
+    .slide-counter {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      font-size: 0.95rem;
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1 1 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.12em;
+    }
+
+    .subtitle-accent {
+      font-size: 1.2rem;
+      color: var(--neon-amber);
+      margin-left: 0.5rem;
+    }
+
+    .focus-areas {
+      margin-top: 1rem;
+    }
+
+    .focus-areas h2 {
+      font-size: 1.6rem;
+      color: var(--text-accent);
+      margin: 1.2rem 0 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .four-pillars {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .four-pillars h3 {
+      font-size: 1.3rem;
+      color: var(--neon-green);
+      margin-bottom: 0.4rem;
+    }
+
+    .four-pillars p {
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.1);
+      padding: 1rem;
+      margin: 0.8rem 0 1.5rem;
+      border-radius: 4px;
+      font-size: 1.05rem;
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin: 0.8rem 0 1.5rem;
+      font-style: italic;
+      font-size: 0.98rem;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1rem 0 2rem;
+      font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .code-demo::before {
+      content: '> LIVE DEMO';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .agenda-overview {
+      margin: 1.5rem 0 2rem;
+    }
+
+    .agenda-overview h3 {
+      font-size: 1.4rem;
+      color: var(--text-accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .agenda-overview pre {
+      background: var(--cyber-darker);
+      padding: 1rem 1.2rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      overflow-x: auto;
+    }
+
+    .slide-footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .live-indicator {
+      color: var(--neon-green);
+    }
+
+    .next-indicator {
+      color: var(--neon-cyan);
+    }
+
+    .slide-navigation {
+      border-top: 1px solid rgba(0, 255, 255, 0.15);
+      padding: 1rem 2.5rem;
+      background: rgba(0, 0, 0, 0.85);
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.9rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      letter-spacing: 0.1em;
+      font-size: 0.85rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-glow {
+      text-shadow: var(--glow-cyan);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      margin-left: 0.5rem;
+      color: var(--neon-amber);
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(4px);
+      }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from {
+        transform: translateX(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 3rem;
+      }
+      .slide-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+      .slide-title {
+        font-size: 2rem;
+      }
+      .slide-header {
+        padding: 0.8rem 1.5rem;
+      }
+      .slide-navigation {
+        padding: 0.8rem 1.5rem;
+      }
+      .nav-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .nav-btn {
+        width: 100%;
+        text-align: center;
+      }
+      .agenda-overview pre {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container slide-enter">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">03</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content fade-in">
+      <div class="slide-header-inner">
+        <h1 class="slide-title">
+          &gt; ADVANCED FOCUS TODAY <span class="subtitle-accent">[AGENDA]</span>
+        </h1>
+      </div>
+
+      <section class="focus-areas">
+        <h2>▶ HOW TO BUILD MCP SERVERS, NOT JUST USE THEM</h2>
+        <div class="concept-highlight">
+          <strong>Deep dive into server architecture, patterns, and implementation</strong>
+        </div>
+
+        <h2>▶ ADVANCED FEATURES: THE FOUR PILLARS</h2>
+        <div class="four-pillars">
+          <div class="pillar">
+            <h3>🔧 TOOLS</h3>
+            <p>Advanced tool patterns, async operations, structured metadata</p>
+          </div>
+          <div class="pillar">
+            <h3>📚 RESOURCES</h3>
+            <p>Dynamic content, auto-updates, subscription patterns</p>
+          </div>
+          <div class="pillar">
+            <h3>💬 PROMPTS</h3>
+            <p>Template systems, dynamic arguments, reusable conversations</p>
+          </div>
+          <div class="pillar">
+            <h3>🤖 SAMPLING</h3>
+            <p>Server-asks-model patterns, AI-driven workflows</p>
+          </div>
+        </div>
+
+        <h2>▶ TOPICS WE WILL NOT COVER</h2>
+        <div class="demo-note">
+          OAuth2, input validation, audit logs, containerization
+        </div>
+
+        <h2>▶ LIVE EXAMPLE: EVERYTHING MCP SERVER + MCP INSPECTOR</h2>
+        <div class="code-demo">
+<pre><code>$ npx -y @modelcontextprotocol/server-everything
+[STARTING] Everything MCP Server v1.0.0
+[LOADED] 8 tools, 4 resources, 3 prompts
+[READY] Available for inspection and live demos
+
+$ mcp-inspector
+[CONNECTED] Real-time tool exploration ready
+[DEMO] Interactive demonstrations throughout presentation</code></pre>
+        </div>
+      </section>
+
+      <section class="agenda-overview">
+        <h3>📋 SESSION BREAKDOWN (30 MIN)</h3>
+<pre><code>├── 03min │ Introduction &amp; Recap
+├── 12min │ Core Architecture + Live Demos
+├── 12min │ Advanced Patterns + Security
+└── 03min │ Workflows + Q&amp;A</code></pre>
+      </section>
+
+      <div class="slide-footer-meta">
+        <span class="live-indicator">● LIVE DEMOS READY</span>
+        <span class="next-indicator">▶ NEXT: Core Server Architecture</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='02-mcp-recap'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar" class="progress-bar">███░░░░░░░░░░░░░</span>]
+            <span id="progress-percent" class="progress-percent">19%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='04-server-architecture'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Basic navigation handler stub – extend as needed
+    function navigateSlide(direction) {
+      const currentEl = document.getElementById('current-slide');
+      const barEl = document.getElementById('progress-bar');
+      const percentEl = document.getElementById('progress-percent');
+      const total = 16;
+
+      let current = parseInt(currentEl.textContent, 10) || 3;
+      if (direction === 'next' && current < total) current++;
+      if (direction === 'prev' && current > 1) current--;
+
+      currentEl.textContent = String(current).padStart(2, '0');
+
+      const percent = Math.round((current / total) * 100);
+      percentEl.textContent = percent + '%';
+
+      const barLength = 20;
+      const filled = Math.round((percent / 100) * barLength);
+      barEl.textContent = '█'.repeat(filled) + '░'.repeat(barLength - filled);
+    }
+
+    document.getElementById('prev-slide').addEventListener('click', function (e) {
+      // navigateSlide('prev'); // URL navigation already handled via onclick href
+    });
+
+    document.getElementById('next-slide').addEventListener('click', function (e) {
+      // navigateSlide('next'); // URL navigation already handled via onclick href
+    });
+
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ':
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

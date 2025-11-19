@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slide 06 - Resources: Read-Only Context</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0d1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00ffff;
+      --neon-green: #00ff41;
+      --neon-magenta: #ff00ff;
+      --neon-amber: #ffb000;
+
+      /* Text Colors */
+      --text-primary: #e6e6e6;
+      --text-secondary: #b3b3b3;
+      --text-accent: #00ffff;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+      --glow-green: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      color: var(--text-primary);
+      font-family: "Monaco", "Consolas", "Courier New", monospace;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      font-family: "Monaco", monospace;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: "Courier New", "Monaco", monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    .slide-counter {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .slide-counter span {
+      color: var(--neon-green);
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 1rem;
+      letter-spacing: 0.08em;
+    }
+
+    .slide-title .subtitle-accent {
+      font-size: 1.2rem;
+      color: var(--neon-amber);
+      text-shadow: 0 0 5px rgba(255, 176, 0, 0.8);
+      margin-left: 1rem;
+    }
+
+    .resources-overview h2,
+    .demo-section h2,
+    .use-cases h2 {
+      font-size: 2rem;
+      color: var(--text-accent);
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .resources-overview h3,
+    .demo-section h3 {
+      font-size: 1.4rem;
+      color: var(--neon-green);
+      margin: 1.2rem 0 0.4rem;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 0.5rem;
+    }
+
+    .pattern-grid h3 {
+      font-size: 1.1rem;
+      color: var(--neon-magenta);
+    }
+
+    .pattern-grid p,
+    .pattern-grid div {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .code-demo,
+    pre.code-block {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.2rem 1.5rem;
+      margin: 1rem 0;
+      font-family: "Fira Code", monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      white-space: pre;
+    }
+
+    .code-demo::before {
+      content: "> LIVE DEMO";
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    .demo-section {
+      margin-top: 2rem;
+    }
+
+    .demo-section ul {
+      margin-top: 0.8rem;
+      padding-left: 1.2rem;
+    }
+
+    .demo-section li {
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .use-cases pre {
+      background: var(--cyber-darker);
+      border-radius: 4px;
+      padding: 1rem 1.5rem;
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      overflow-x: auto;
+    }
+
+    .slide-footer {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .slide-footer .demo-ready {
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+    }
+
+    .slide-footer .next-indicator {
+      color: var(--neon-cyan);
+    }
+
+    .slide-navigation {
+      padding: 1rem 2rem 1.5rem;
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.75);
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 1rem 2rem;
+      font-family: "Monaco", monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-glow {
+      text-shadow: var(--glow-cyan);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      margin-left: 0.5rem;
+      color: var(--neon-cyan);
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(4px);
+      }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from {
+        transform: translateX(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 3rem;
+      }
+
+      .slide-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+
+      .slide-title {
+        font-size: 2rem;
+      }
+
+      .nav-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .progress-container {
+        justify-content: flex-start;
+      }
+
+      .slide-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container">
+    <header class="slide-header">
+      <div class="terminal-prompt">&gt; ADVANCED MCP PRESENTATION</div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">06</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content slide-enter">
+      <div class="slide-header">
+        <h1 class="slide-title">
+          &gt; RESOURCES: READ-ONLY CONTEXT <span class="subtitle-accent">[DYNAMIC DATA]</span>
+        </h1>
+      </div>
+
+      <div class="resources-overview fade-in">
+        <h2>▶ URI-BASED STRUCTURED CONTENT</h2>
+
+        <div class="concept-highlight">
+          <strong>Provide structured content on demand - great for large data and real-time updates</strong>
+        </div>
+
+        <pre class="code-block">{
+  "uri": "test://static/resource/42",
+  "name": "Static Test Resource",
+  "description": "A test resource that updates every 5 seconds",
+  "mimeType": "application/json"
+}</pre>
+
+        <h2>▶ RESOURCE PATTERNS</h2>
+        <div class="pattern-grid">
+          <div>
+            <h3>📊 LARGE DATA SETS</h3>
+            <div>File contents, search results, database queries</div>
+          </div>
+          <div>
+            <h3>🔄 AUTO-UPDATING</h3>
+            <div>Real-time data feeds, monitoring dashboards</div>
+          </div>
+          <div>
+            <h3>🔗 SUBSCRIPTIONS</h3>
+            <div>Push notifications when resources change</div>
+          </div>
+        </div>
+
+        <h2>▶ AUTO-UPDATE ARCHITECTURE</h2>
+        <pre class="code-block">┌────────────────────────────────────────────────────────────────┐
+│              AUTO-UPDATING RESOURCE SYSTEM                    │
+├────────────────────────────────────────────────────────────────┤
+│                                                                │
+│  ┌─────────────┐    5s Timer    ┌─────────────┐               │
+│  │  RESOURCE   │◄──────────────►│   UPDATE    │               │
+│  │ test://42   │                │  GENERATOR  │               │
+│  └─────────────┘                └─────────────┘               │
+│         │                               │                     │
+│         ▼                               ▼                     │
+│  ┌─────────────┐                ┌─────────────┐               │
+│  │ SUBSCRIBERS │                │  NEW DATA   │               │
+│  │   NOTIFIED  │◄───────────────┤  TIMESTAMP  │               │
+│  └─────────────┘                └─────────────┘               │
+│                                                                │
+│  Inspector, Claude, and other clients get live updates        │
+└────────────────────────────────────────────────────────────────┘</pre>
+      </div>
+
+      <div class="demo-section fade-in">
+        <h2>🎮 LIVE DEMO: AUTO-UPDATING RESOURCES</h2>
+
+        <div class="demo-note">
+          <strong>DEMONSTRATION:</strong> <code>test://static/resource/42</code> in Everything Server - auto-updates every 5 seconds
+        </div>
+
+        <div class="code-demo">
+<pre>$ mcp-inspector
+&gt; Navigate to Resources tab
+&gt; Subscribe to test://static/resource/42
+
+[T+00s] {"id": 42, "timestamp": "2025-11-19T10:00:00Z", "value": 1}
+[T+05s] {"id": 42, "timestamp": "2025-11-19T10:00:05Z", "value": 2}
+[T+10s] {"id": 42, "timestamp": "2025-11-19T10:00:10Z", "value": 3}
+[T+15s] {"id": 42, "timestamp": "2025-11-19T10:00:15Z", "value": 4}
+
+[NOTIFICATION] Resource updated - new data available
+[SUBSCRIPTION] Real-time updates flowing to all subscribers</pre>
+        </div>
+
+        <h3>Key Observations:</h3>
+        <ul>
+          <li><strong>Automatic updates</strong> - no polling required</li>
+          <li><strong>Subscription model</strong> - efficient resource management</li>
+          <li><strong>Version tracking</strong> - timestamp-based change detection</li>
+          <li><strong>Multiple consumers</strong> - Inspector + Claude both receive updates</li>
+        </ul>
+      </div>
+
+      <div class="use-cases fade-in">
+        <h2>▶ COMMON USE CASES</h2>
+        <pre>├── File System Contents    │ Directory listings, file metadata
+├── Database Query Results  │ Live data feeds, cached queries
+├── API Response Caching    │ External service data
+├── Search Indexes         │ Document collections, embeddings
+└── Monitoring Dashboards   │ System metrics, health checks</pre>
+      </div>
+
+      <div class="slide-footer fade-in">
+        <span class="demo-ready">🎮 LIVE UPDATE DEMO READY</span>
+        <span class="next-indicator">▶ NEXT: Prompt Templates</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" onclick="window.location.href='05-tools-heart'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span class="progress-bar">██████░░░░░░░░░░</span>]
+            <span class="progress-percent">37%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" onclick="window.location.href='07-prompt-templates'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Keyboard navigation support for future integration
+    function navigateSlide(direction) {
+      if (direction === 'next') {
+        window.location.href = '07-prompt-templates';
+      } else if (direction === 'prev') {
+        window.location.href = '05-tools-heart';
+      }
+    }
+
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ': // space
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+        default:
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

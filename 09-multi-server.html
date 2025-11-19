@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slide 09 - Multi-Server Architecture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      color: var(--text-primary);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      font-family: 'Monaco', monospace;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid rgba(0,255,255,0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-size: 1rem;
+    }
+
+    .slide-counter {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .slide-counter span {
+      color: var(--neon-green);
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-family: 'Courier New', 'Monaco', monospace;
+      margin-bottom: 1.5rem;
+    }
+
+    .slide-title .subtitle-accent {
+      font-size: 1.4rem;
+      color: var(--neon-green);
+      margin-left: 0.5rem;
+    }
+
+    .multi-server-overview h2,
+    .composition-patterns h2,
+    .demo-section h2,
+    .benefits-grid h2 {
+      font-size: 2rem;
+      color: var(--text-accent);
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .code-demo::before {
+      content: '> LIVE DEMO';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .code-demo.ascii::before {
+      content: '> ARCHITECTURE DIAGRAM';
+    }
+
+    .code-demo.json-demo::before {
+      content: '> SERVER NAMESPACE CONFIG';
+    }
+
+    .code-demo.terminal-demo::before {
+      content: '> TERMINAL SESSION';
+    }
+
+    pre {
+      white-space: pre;
+    }
+
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .pattern-grid h3 {
+      font-size: 1.2rem;
+      color: var(--neon-magenta);
+      margin-bottom: 0.5rem;
+    }
+
+    .pattern-grid p {
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    .demo-note strong {
+      color: var(--neon-magenta);
+    }
+
+    .benefits-grid .code-demo {
+      margin-top: 1rem;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 4rem 0;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .demo-ready {
+      color: var(--neon-green);
+    }
+
+    .next-indicator {
+      color: var(--neon-cyan);
+    }
+
+    .slide-navigation {
+      border-top: 1px solid rgba(0,255,255,0.3);
+      padding: 1rem 2.5rem 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 1rem 2rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-glow {
+      text-shadow: var(--glow-cyan);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--text-secondary);
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      margin-left: 0.5rem;
+      color: var(--neon-cyan);
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 255, 0.03) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.18;
+      z-index: 0;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 3rem;
+      }
+      .slide-title {
+        font-size: 2.5rem;
+      }
+      .slide-footer {
+        padding: 1rem 3rem 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+      .slide-title {
+        font-size: 2rem;
+      }
+      .slide-header {
+        padding: 0.8rem 1.5rem;
+      }
+      .slide-navigation {
+        padding: 0.8rem 1.5rem 1.2rem;
+      }
+      .nav-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
+      }
+      .slide-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 1rem 1.5rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container slide-enter">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">09</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content fade-in">
+      <div class="slide-header">
+        <h1 class="slide-title">
+          &gt; MULTI-SERVER ARCHITECTURE <span class="subtitle-accent">[COMPOSITION]</span>
+        </h1>
+      </div>
+
+      <div class="multi-server-overview">
+        <h2>▶ SPECIALIZED SERVER COMPOSITION</h2>
+        <div class="concept-highlight">
+          <strong>Compose specialized servers: Git, Filesystem, Database, etc. - Keep scopes focused</strong>
+        </div>
+
+        <div class="code-demo ascii">
+          <pre><code>┌──────────────────────────────────────────────────────────────────┐
+│                   MULTI-SERVER ARCHITECTURE                      │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│    ┌─────────────┐  ┌─────────────┐  ┌─────────────┐            │
+│    │    GIT      │  │ FILESYSTEM  │  │  DATABASE   │            │
+│    │   SERVER    │  │   SERVER    │  │   SERVER    │            │
+│    ├─────────────┤  ├─────────────┤  ├─────────────┤            │
+│    │• git_commit │  │• read_file  │  │• query_data │            │
+│    │• git_status │  │• list_dir   │  │• insert_row │            │
+│    │• git_diff   │  │• write_file │  │• update_rec │            │
+│    └─────────────┘  └─────────────┘  └─────────────┘            │
+│           │                │                │                    │
+│           └────────────────┼────────────────┘                    │
+│                           │                                      │
+│                    ┌─────────────┐                               │
+│                    │   CLAUDE    │                               │
+│                    │    CLIENT   │                               │
+│                    ├─────────────┤                               │
+│                    │• Orchestrates                               │
+│                    │• Combines                                   │
+│                    │• Coordinates                                │
+│                    └─────────────┘                               │
+│                                                                  │
+│  Client orchestrates multi-server workflows intelligently        │
+└──────────────────────────────────────────────────────────────────┘</code></pre>
+        </div>
+      </div>
+
+      <div class="composition-patterns">
+        <h2>▶ COMPOSITION PATTERNS</h2>
+        <div class="pattern-grid">
+          <div class="pattern-item">
+            <h3>🎯 FOCUSED DOMAINS</h3>
+            <p>Each server handles one specific domain</p>
+          </div>
+          <div class="pattern-item">
+            <h3>🔗 UNIQUE NAMESPACES</h3>
+            <p>Avoid tool/resource name collisions</p>
+          </div>
+          <div class="pattern-item">
+            <h3>🤝 CLIENT ORCHESTRATION</h3>
+            <p>Let client combine server capabilities</p>
+          </div>
+        </div>
+
+        <h2>▶ NAMESPACE COLLISION AVOIDANCE</h2>
+        <div class="code-demo json-demo">
+          <pre><code>{
+  "git-server": {
+    "tools": ["git_commit", "git_status", "git_diff"],
+    "namespace": "git"
+  },
+  "fs-server": {
+    "tools": ["read_file", "write_file", "list_directory"],
+    "namespace": "filesystem"
+  },
+  "db-server": {
+    "tools": ["query_data", "insert_record", "update_record"],
+    "namespace": "database"
+  }
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>🎮 LIVE DEMO: CONCURRENT CONNECTIONS</h2>
+        <div class="demo-note">
+          <strong>DEMONSTRATION:</strong> Claude connects to Everything Server + Git Server + Filesystem Server concurrently
+        </div>
+
+        <div class="code-demo terminal-demo">
+          <pre><code>$ claude-desktop
+[LOADING] Connecting to configured MCP servers...
+
+[CONNECTED] everything-server
+  ├── Tools: echo, add, longRunningOperation, sampleLLM
+  ├── Resources: test://static/resource/42, test://dynamic
+  └── Prompts: simple_prompt, resource_prompt, complex_prompt
+
+[CONNECTED] git-server
+  ├── Tools: git_commit, git_status, git_diff, git_log
+  └── Resources: repo://current/status, repo://current/branches
+
+[CONNECTED] filesystem-server
+  ├── Tools: read_file, write_file, list_directory, search_files
+  └── Resources: file://workspace/, file://config/
+
+[ORCHESTRATION] Client can now combine all server capabilities
+[WORKFLOW] Create file → Git commit → Database log → Generate summary</code></pre>
+        </div>
+
+        <section class="key-observations">
+          <h3>Key Observations:</h3>
+          <ul>
+            <li><strong>Concurrent connections</strong> - multiple servers active simultaneously</li>
+            <li><strong>Namespace separation</strong> - no tool name conflicts</li>
+            <li><strong>Intelligent orchestration</strong> - client combines capabilities</li>
+            <li><strong>Workflow composition</strong> - complex multi-server operations</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="benefits-grid">
+        <h2>▶ ARCHITECTURAL BENEFITS</h2>
+        <div class="code-demo">
+          <pre><code>├── SCALABILITY       │ Add servers without modifying existing ones
+├── MAINTAINABILITY   │ Each server has focused responsibilities
+├── REUSABILITY       │ Servers can be shared across projects
+├── FAULT ISOLATION   │ Server failures don't cascade
+└── TEAM OWNERSHIP    │ Different teams can own different servers</code></pre>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span class="demo-ready">🎮 MULTI-SERVER DEMO READY</span>
+        <span class="next-indicator">▶ NEXT: Live Demo - Everything Server + Inspector</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='08-sampling-model'"><span class="btn-glow">◀ PREV</span></button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar" class="progress-bar">█████████░░░░░░░</span>]
+            <span id="progress-percent" class="progress-percent">56%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='10-live-demo'"><span class="btn-glow">NEXT ▶</span></button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    function navigateSlide(direction) {
+      const currentSlideEl = document.getElementById('current-slide');
+      const progressBarEl = document.getElementById('progress-bar');
+      const progressPercentEl = document.getElementById('progress-percent');
+
+      let current = parseInt(currentSlideEl.textContent, 10) || 9;
+      const total = 16;
+
+      if (direction === 'next' && current < total) current++;
+      if (direction === 'prev' && current > 1) current--;
+
+      currentSlideEl.textContent = String(current).padStart(2, '0');
+
+      const percent = Math.round((current / total) * 100);
+      progressPercentEl.textContent = percent + '%';
+
+      const blocks = 18;
+      const filledBlocks = Math.round((percent / 100) * blocks);
+      const bar = '█'.repeat(filledBlocks) + '░'.repeat(blocks - filledBlocks);
+      progressBarEl.textContent = bar;
+
+      if (direction === 'next') {
+        // window.location.href = '10-live-demo';
+      } else if (direction === 'prev') {
+        // window.location.href = '08-sampling-model';
+      }
+    }
+
+    document.getElementById('next-slide').addEventListener('click', function (e) {
+      // navigateSlide('next');
+    });
+
+    document.getElementById('prev-slide').addEventListener('click', function (e) {
+      // navigateSlide('prev');
+    });
+
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ':
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>
