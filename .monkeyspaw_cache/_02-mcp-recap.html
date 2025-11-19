@@ -1,0 +1,561 @@
+<!-- Slide 02: What is MCP? (Quick Recap) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced MCP Presentation - Slide 02</title>
+
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      color: var(--text-primary);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+      min-height: 100vh;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      font-family: 'Monaco', monospace;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 0.08em;
+    }
+
+    .slide-counter {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .slide-counter span {
+      color: var(--neon-cyan);
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+    }
+
+    .slide-title .subtitle-accent {
+      font-size: 1.2rem;
+      color: var(--neon-magenta);
+      margin-left: 1rem;
+    }
+
+    .slide-title::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 32px;
+      background: var(--neon-green);
+      box-shadow: var(--glow-green);
+      margin-right: 0.75rem;
+      vertical-align: middle;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .concept-grid section {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .concept-grid section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--neon-cyan), var(--neon-green));
+      box-shadow: var(--glow-cyan);
+    }
+
+    .concept-grid h2 {
+      font-size: 1rem;
+      color: var(--text-accent);
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.1);
+      padding: 1rem;
+      margin: 0.5rem 0 0;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin-top: 0.75rem;
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+
+    .ascii-diagram {
+      font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+      background: var(--cyber-darker);
+      border-radius: 4px;
+      border: 1px solid rgba(0, 255, 65, 0.5);
+      padding: 1rem 1.25rem;
+      font-size: 0.8rem;
+      color: var(--neon-green);
+      white-space: pre;
+      overflow-x: auto;
+      margin-top: 0.75rem;
+    }
+
+    .key-benefits {
+      margin-top: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .key-benefits h3 {
+      font-size: 1rem;
+      color: var(--text-accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.2rem 1.5rem;
+      margin: 0.5rem 0;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+
+    .code-demo::before {
+      content: '> TERMINAL DEMO';
+      position: absolute;
+      top: -11px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+    }
+
+    .slide-footer {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .next-indicator {
+      color: var(--neon-cyan);
+    }
+
+    .slide-navigation {
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 1rem 2.5rem;
+      background: rgba(0, 0, 0, 0.7);
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.8rem 1.6rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
+
+    .nav-btn .btn-glow {
+      text-shadow: var(--glow-cyan);
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .progress-percent {
+      color: var(--neon-cyan);
+      margin-left: 0.5rem;
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 3rem;
+      }
+      .slide-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-header {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+
+      .slide-title {
+        font-size: 2rem;
+        letter-spacing: 0.08em;
+      }
+
+      .concept-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .slide-navigation {
+        padding: 0.8rem 1.5rem;
+      }
+
+      .nav-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .progress-container {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container">
+    <!-- Global header for the deck -->
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">02</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content slide-enter">
+      <!-- Slide 2 Header -->
+      <div class="slide-header" style="background:none;border-bottom:none;padding:0;margin-bottom:0.5rem;">
+        <h1 class="slide-title">
+          &gt; WHAT IS MCP? <span class="subtitle-accent">[QUICK RECAP]</span>
+        </h1>
+      </div>
+
+      <!-- Main concept grid -->
+      <div class="concept-grid fade-in">
+        <!-- Open protocol block -->
+        <section>
+          <h2>▶ OPEN PROTOCOL FOR AI INTEGRATION</h2>
+          <div class="concept-highlight">
+            <strong>Open protocol for connecting LLMs to external tools, data, and prompts</strong>
+          </div>
+        </section>
+
+        <!-- M + N problem block -->
+        <section>
+          <h2>▶ SOLVES THE M + N PROBLEM</h2>
+          <div class="ascii-diagram code-block">
+WITHOUT MCP:           WITH MCP:
+┌─────────────┐       ┌─────────────┐
+│   LLM A     │◄─────►│   LLM A     │◄──┐
+├─────────────┤       ├─────────────┤   │
+│   LLM B     │◄──┐   │   LLM B     │◄──┤  MCP
+├─────────────┤   │   ├─────────────┤   │ PROTOCOL
+│   LLM C     │◄──┼──►│   LLM C     │◄──┤
+└─────────────┘   │   └─────────────┘   │
+     ▲ ▲ ▲        │                     │
+     │ │ │        │   ┌─────────────┐   │
+     │ │ └────────┼──►│  TOOL A     │◄──┘
+     │ └──────────┼──►│  TOOL B     │◄──┘
+     └────────────┴──►│  TOOL C     │◄──┘
+                      └─────────────┘
+
+  M×N connections      M+N connections
+          </div>
+        </section>
+
+        <!-- Server toolbox block -->
+        <section>
+          <h2>▶ SERVER = "TOOLBOX" FOR THE MODEL</h2>
+          <div class="demo-note">
+            <strong>DEMO CONCEPT:</strong> Each MCP server acts as a specialized toolbox that models can pick up and use
+          </div>
+        </section>
+      </div>
+
+      <!-- Key benefits / terminal demo -->
+      <div class="key-benefits fade-in" style="animation-delay:0.15s;">
+        <h3>ENABLES MODULAR, SCALABLE INTEGRATION</h3>
+        <div class="code-demo">
+$ mcp-connect --server filesystem --server git --server database
+[CONNECTED] 3 servers, 24 tools, 8 resources available
+[READY] Claude can now access files, git, and data
+        </div>
+      </div>
+
+      <!-- Slide-local footer text -->
+      <div class="slide-footer fade-in" style="animation-delay:0.25s;">
+        <span class="next-indicator">▶ NEXT: Advanced Focus Areas</span>
+      </div>
+    </main>
+
+    <!-- Global footer navigation -->
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='01-title'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar" class="progress-bar">██░░░░░░░░░░░░░░</span>]
+            <span id="progress-percent" class="progress-percent">12%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='03-advanced-focus'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <!-- Cyberpunk effects overlay -->
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Simple navigation function (stubbed for extensibility)
+    function navigateSlide(direction) {
+      const totalSlides = 16;
+      const currentSpan = document.getElementById('current-slide');
+      let current = parseInt(currentSpan.textContent, 10) || 2;
+
+      if (direction === 'next') {
+        if (current < totalSlides) current++;
+      } else if (direction === 'prev') {
+        if (current > 1) current--;
+      }
+
+      currentSpan.textContent = String(current).padStart(2, '0');
+
+      // Update progress bar and percentage
+      const progressPercent = document.getElementById('progress-percent');
+      const progressBar = document.getElementById('progress-bar');
+      const percent = Math.round((current / totalSlides) * 100);
+      progressPercent.textContent = percent + '%';
+
+      // Build a simple ASCII bar of length 18
+      const totalBlocks = 18;
+      const filledBlocks = Math.round((percent / 100) * totalBlocks);
+      const bar = '█'.repeat(filledBlocks) + '░'.repeat(totalBlocks - filledBlocks);
+      progressBar.textContent = bar;
+
+      // Optionally update URL routing here if used in a larger deck
+      // window.location.href = ...
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ': // Space
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

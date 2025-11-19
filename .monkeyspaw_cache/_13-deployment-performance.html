@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slide 13 - Deployment & Performance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      color: var(--text-primary);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      font-family: 'Monaco', monospace;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-size: 1rem;
+    }
+
+    .slide-counter {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 1rem;
+      font-family: 'Courier New', 'Monaco', monospace;
+    }
+
+    .slide-title .subtitle-accent {
+      font-size: 1.4rem;
+      color: var(--neon-green);
+      margin-left: 0.8rem;
+    }
+
+    .deployment-overview,
+    .performance-patterns,
+    .demo-section,
+    .containerization,
+    .scaling-strategies {
+      margin-top: 2rem;
+    }
+
+    .slide-content h2 {
+      font-size: 2rem;
+      color: var(--text-accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .slide-content h3 {
+      font-size: 1.4rem;
+      color: var(--neon-amber);
+      margin: 1.2rem 0 0.4rem;
+    }
+
+    .slide-content p,
+    .slide-content li {
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.08);
+      padding: 1rem;
+      margin: 1rem 0 1.5rem;
+      border-radius: 4px;
+    }
+
+    .ascii-diagram {
+      font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+      background: var(--cyber-darker);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      padding: 1.2rem;
+      white-space: pre;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+
+    .code-demo::before {
+      content: '> LIVE DEMO';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .code-demo.code-static::before {
+      content: '> CODE SAMPLE';
+    }
+
+    .code-demo.code-terminal::before {
+      content: '> TERMINAL SESSION';
+    }
+
+    .shutdown-grid,
+    .monitoring-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .shutdown-grid > div,
+    .monitoring-grid > div {
+      background: rgba(10, 10, 10, 0.8);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 1rem;
+      border-radius: 4px;
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    .demo-section ul,
+    .scaling-strategies ul {
+      margin-left: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    .demo-section li,
+    .scaling-strategies li {
+      margin-bottom: 0.25rem;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(0, 255, 255, 0.3);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .demo-ready {
+      color: var(--neon-magenta);
+    }
+
+    .next-indicator {
+      color: var(--neon-green);
+    }
+
+    .slide-navigation {
+      border-top: 1px solid rgba(0, 255, 255, 0.2);
+      padding: 1rem 2.5rem 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.8rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn .btn-glow {
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      margin-left: 0.4rem;
+      color: var(--text-accent);
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 255, 0.03) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.15;
+      z-index: 0;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 2.5rem;
+      }
+
+      .slide-title {
+        font-size: 2.5rem;
+      }
+
+      .slide-header {
+        padding: 1rem 1.5rem;
+      }
+
+      .slide-navigation {
+        padding: 1rem 1.5rem 1.2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+
+      .slide-title {
+        font-size: 2rem;
+      }
+
+      .nav-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .progress-container {
+        order: 3;
+        margin-top: 0.5rem;
+      }
+
+      .nav-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">13</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content slide-enter">
+      <div class="slide-header">
+        <h1 class="slide-title">
+          &gt; DEPLOYMENT &amp; PERFORMANCE <span class="subtitle-accent">[SCALE READY]</span>
+        </h1>
+      </div>
+
+      <div class="deployment-overview fade-in">
+        <h2>▶ PRODUCTION DEPLOYMENT ARCHITECTURE</h2>
+        <div class="concept-highlight">
+          <strong>Async I/O, graceful shutdowns, containerization with resource limits</strong>
+        </div>
+        <div class="ascii-diagram">
+┌──────────────────────────────────────────────────────────────────┐
+│                 PRODUCTION DEPLOYMENT STACK                      │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐        │
+│  │ LOAD        │────►│ MCP SERVER  │────►│ RESOURCES   │        │
+│  │ BALANCER    │     │ CONTAINER   │     │ (DB/FILES)  │        │
+│  │ (nginx)     │     │ (Docker)    │     │             │        │
+│  └─────────────┘     └─────────────┘     └─────────────┘        │
+│         │                    │                    │              │
+│         ▼                    ▼                    ▼              │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐        │
+│  │ TLS TERM    │     │ RESOURCE    │     │ MONITORING  │        │
+│  │ + AUTH      │     │ LIMITS      │     │ &amp; LOGGING   │        │
+│  └─────────────┘     └─────────────┘     └─────────────┘        │
+│                                                                  │
+│  Horizontal scaling with multiple container instances            │
+└──────────────────────────────────────────────────────────────────┘
+        </div>
+      </div>
+
+      <div class="performance-patterns fade-in">
+        <h2>▶ ASYNC I/O AND CONCURRENCY</h2>
+        <div class="code-demo code-static">
+<pre><code>import asyncio
+from typing import AsyncGenerator
+
+@server.tool()
+async def process_large_dataset(data_source: str) -&gt; AsyncGenerator[str, None]:
+    &quot;&quot;&quot;Process large dataset with streaming results.&quot;&quot;&quot;
+
+    # Async file processing
+    async with aiofiles.open(data_source, 'r') as file:
+        async for chunk in file:
+            # Non-blocking processing
+            result = await process_chunk_async(chunk)
+
+            # Stream results back
+            yield f&quot;Processed: {result}&quot;
+
+            # Yield control to event loop
+            await asyncio.sleep(0)
+
+# Concurrent tool execution
+async def handle_multiple_requests():
+    tasks = [
+        process_tool_a(),
+        process_tool_b(),
+        process_tool_c()
+    ]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    return results
+</code></pre>
+        </div>
+
+        <h2>▶ GRACEFUL SHUTDOWN PATTERNS</h2>
+        <div class="shutdown-grid">
+          <div>
+            <h3>🛑 SIGNAL HANDLING</h3>
+            <p>SIGTERM, SIGINT for clean shutdown</p>
+          </div>
+          <div>
+            <h3>⏳ REQUEST COMPLETION</h3>
+            <p>Wait for active requests to finish</p>
+          </div>
+          <div>
+            <h3>🔄 RESOURCE CLEANUP</h3>
+            <p>Close connections, flush buffers, save state</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-section fade-in">
+        <h2>🎮 LIVE DEMO: RESOURCE SCOPING</h2>
+        <div class="demo-note">
+          <strong>DEMONSTRATION:</strong> <code>listRoots</code> shows file scoping and safe enumeration
+        </div>
+        <div class="code-demo code-terminal">
+<pre><code>$ mcp-inspector
+&gt; Call listRoots tool
+
+Response: {
+  &quot;roots&quot;: [
+    {
+      &quot;uri&quot;: &quot;file:///workspace/mcp-demo&quot;,
+      &quot;name&quot;: &quot;MCP Demo Project&quot;,
+      &quot;description&quot;: &quot;Demo project files and resources&quot;
+    },
+    {
+      &quot;uri&quot;: &quot;file:///shared/templates&quot;,
+      &quot;name&quot;: &quot;Shared Templates&quot;,
+      &quot;description&quot;: &quot;Read-only template library&quot;
+    }
+  ],
+  &quot;access_policy&quot;: {
+    &quot;read&quot;: [&quot;*.md&quot;, &quot;*.json&quot;, &quot;*.yaml&quot;],
+    &quot;write&quot;: [&quot;workspace/**/*&quot;],
+    &quot;exclude&quot;: [&quot;.env&quot;, &quot;credentials.*&quot;, &quot;*.key&quot;]
+  }
+}
+
+[SECURITY] Only listed roots accessible
+[PERFORMANCE] Efficient directory enumeration
+[AUDIT] All access attempts logged
+</code></pre>
+        </div>
+
+        <h3>Performance Optimizations:</h3>
+        <ul>
+          <li><strong>Lazy Loading</strong>: Resources loaded on demand</li>
+          <li><strong>Caching Strategy</strong>: Frequently accessed data cached</li>
+          <li><strong>Batch Operations</strong>: Multiple file operations combined</li>
+          <li><strong>Index Optimization</strong>: Fast directory traversal</li>
+        </ul>
+      </div>
+
+      <div class="containerization fade-in">
+        <h2>▶ CONTAINERIZED DEPLOYMENT</h2>
+        <div class="code-demo code-static">
+<pre><code># Production-ready MCP server container
+FROM python:3.11-slim
+
+# Security: non-root user
+RUN useradd -m -u 1000 mcpuser
+
+# Performance: multi-stage build for smaller image
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Resource limits in docker-compose
+services:
+  mcp-server:
+    build: .
+    user: &quot;1000:1000&quot;
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    healthcheck:
+      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:8000/health&quot;]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+</code></pre>
+        </div>
+
+        <h2>▶ MONITORING &amp; OBSERVABILITY</h2>
+        <div class="monitoring-grid">
+          <div>
+            <h3>📊 METRICS COLLECTION</h3>
+            <p>Response times, throughput, error rates, resource usage</p>
+          </div>
+          <div>
+            <h3>🔍 DISTRIBUTED TRACING</h3>
+            <p>Request flows across multiple servers</p>
+          </div>
+          <div>
+            <h3>📈 PERFORMANCE DASHBOARDS</h3>
+            <p>Real-time operational insights</p>
+          </div>
+          <div>
+            <h3>🚨 ALERTING</h3>
+            <p>Automated notifications for anomalies</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="scaling-strategies fade-in">
+        <h2>▶ HORIZONTAL SCALING STRATEGIES</h2>
+        <div class="code-demo code-static">
+<pre><code># Kubernetes deployment example
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-server
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mcp-server
+  template:
+    spec:
+      containers:
+      - name: mcp-server
+        image: mcp-server:latest
+        resources:
+          requests:
+            memory: &quot;256Mi&quot;
+            cpu: &quot;250m&quot;
+          limits:
+            memory: &quot;512Mi&quot;
+            cpu: &quot;500m&quot;
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+</code></pre>
+        </div>
+
+        <h3>Scaling Considerations:</h3>
+        <ul>
+          <li><strong>Stateless Design</strong>: Servers can be replicated easily</li>
+          <li><strong>Load Distribution</strong>: Round-robin or intelligent routing</li>
+          <li><strong>Health Checks</strong>: Automatic failover and recovery</li>
+          <li><strong>Rolling Updates</strong>: Zero-downtime deployments</li>
+        </ul>
+      </div>
+
+      <div class="slide-footer">
+        <span class="demo-ready">🎮 SCOPING DEMO READY</span>
+        <span class="next-indicator">▶ NEXT: Advanced Workflow Examples</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='12-security-practices'"><span class="btn-glow">◀ PREV</span></button>
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar" class="progress-bar">█████████████░░░</span>]
+            <span id="progress-percent" class="progress-percent">81%</span>
+          </div>
+        </div>
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='14-workflow-examples'"><span class="btn-glow">NEXT ▶</span></button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    function navigateSlide(direction) {
+      const current = 13;
+      let target = current;
+      if (direction === 'next') target = Math.min(16, current + 1);
+      if (direction === 'prev') target = Math.max(1, current - 1);
+
+      const percent = Math.round((target / 16) * 100);
+      const barEl = document.getElementById('progress-bar');
+      const percentEl = document.getElementById('progress-percent');
+      const sliderEl = document.getElementById('current-slide');
+
+      if (sliderEl) sliderEl.textContent = String(target).padStart(2, '0');
+      if (percentEl) percentEl.textContent = percent + '%';
+
+      const totalSlots = 15;
+      const filledSlots = Math.round((percent / 100) * totalSlots);
+      const bar = '█'.repeat(filledSlots) + '░'.repeat(totalSlots - filledSlots);
+      if (barEl) barEl.textContent = bar;
+    }
+
+    document.addEventListener('keydown', function(e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ': // space
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

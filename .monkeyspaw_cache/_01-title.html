@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slide 01 - Building Advanced MCP Servers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+      color: var(--text-primary);
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.7);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 0.04em;
+    }
+
+    .slide-counter {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title-container {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .slide-subtitle-section {
+      margin-top: 0.5rem;
+    }
+
+    .slide-subtitle {
+      font-size: 1.5rem;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .presentation-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .presentation-info .terminal-prompt {
+      margin-right: 0.5rem;
+    }
+
+    .ascii-decoration {
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      color: var(--neon-amber);
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 176, 0, 0.5);
+      padding: 1rem 1.5rem;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .slide-footer-note {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .demo-indicator {
+      color: var(--neon-magenta);
+      text-shadow: 0 0 6px var(--neon-magenta);
+      font-weight: bold;
+    }
+
+    .slide-navigation {
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 1rem 2.5rem 1.5rem;
+      background: rgba(0, 0, 0, 0.8);
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.9rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      min-width: 140px;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-glow {
+      text-shadow: var(--glow-cyan);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+    }
+
+    .ascii-progress .progress-bar,
+    .ascii-progress #progress-bar {
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+    }
+
+    .ascii-progress .progress-percent,
+    .ascii-progress #progress-percent {
+      margin-left: 0.5rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    /* Scanlines */
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 255, 0.03) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    /* Grid Overlay */
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    /* Glitch Effect */
+    .glitch {
+      position: relative;
+      color: var(--text-primary);
+      animation: glitch 2s infinite;
+      display: inline-block;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .glitch::before {
+      color: var(--neon-magenta);
+      animation: glitch-1 2s infinite;
+      clip-path: inset(0 0 50% 0);
+    }
+
+    .glitch::after {
+      color: var(--neon-cyan);
+      animation: glitch-2 2s infinite;
+      clip-path: inset(50% 0 0 0);
+    }
+
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes glitch-1 {
+      0% { transform: translate(-2px, -2px); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(-2px, -2px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    @keyframes glitch-2 {
+      0% { transform: translate(2px, 2px); }
+      20% { transform: translate(2px, -2px); }
+      40% { transform: translate(-2px, 2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* ASCII Title Frame (from description) */
+    .ascii-title-frame {
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      color: var(--text-accent);
+      text-align: center;
+      margin-bottom: 2.5rem;
+      display: none; /* Hidden by default; can be toggled if needed */
+    }
+
+    /* Fade-in for slide */
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 2.5rem;
+      }
+      .slide-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .slide-content {
+        padding: 1.25rem 1.5rem;
+      }
+
+      .slide-title {
+        font-size: 2rem;
+      }
+
+      .presentation-info {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .nav-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .progress-container {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container slide-enter">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">01</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content">
+      <!-- Optional full ASCII title block from description (kept for reference, hidden by default) -->
+      <div class="ascii-title-frame" aria-hidden="true">
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║    ██████   ██████  ██    ██  █████  ███    ██  ██████ ███████   ║
+║   ██   ██  ██   ██  ██    ██ ██   ██ ████   ██ ██      ██        ║
+║   ███████  ██   ██  ██    ██ ███████ ██ ██  ██ ██      █████     ║
+║   ██   ██  ██   ██   ██  ██  ██   ██ ██  ██ ██ ██      ██        ║
+║   ██   ██  ██████     ████   ██   ██ ██   ████  ██████ ███████   ║
+║                                                                  ║
+║                                                                  ║
+║        ███    ███  ██████ ██████                                 ║
+║        ████  ████ ██      ██   ██                                ║
+║        ██ ████ ██ ██      ██████                                 ║
+║        ██  ██  ██ ██      ██                                     ║
+║        ██      ██  ██████ ██                                     ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+      </div>
+
+      <div class="slide-title-container">
+        <h1 class="slide-title glitch" data-text="BUILDING ADVANCED MCP SERVERS">
+          BUILDING ADVANCED MCP SERVERS
+        </h1>
+
+        <div class="slide-subtitle-section">
+          <h2 class="slide-subtitle">
+            &gt; TECHNIQUES, PATTERNS, AND EXAMPLES
+          </h2>
+        </div>
+      </div>
+
+      <div class="presentation-info">
+        <div class="event-info">
+          <span class="terminal-prompt">$</span> AI ENGINEERING WORKING GROUP
+          <br>
+          <span class="terminal-prompt">$</span> NOVEMBER 2025
+        </div>
+
+        <div class="presenter-info">
+          <span class="terminal-prompt">::</span> PRESENTED BY VALENTINO STOLL
+        </div>
+      </div>
+
+      <div class="ascii-decoration">
+┌─────────────────────────────────────────────────┐
+│  [INITIALIZING ADVANCED MCP PRESENTATION...]    │
+│  ████████████████████████████████████████ 100% │
+│  [READY FOR LIVE DEMONSTRATIONS]               │
+└─────────────────────────────────────────────────┘
+      </div>
+
+      <div class="slide-footer-note">
+        <span class="demo-indicator">● LIVE</span>
+        <span>Everything MCP Server + MCP Inspector Ready</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='index'" disabled>
+          <span class="btn-glow">◀ INDEX</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar">█░░░░░░░░░░░░░░░</span>]
+            <span id="progress-percent">6%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='02-mcp-recap'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <!-- Cyberpunk effects overlay -->
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Basic navigation function stub (for keyboard support & extensibility)
+    function navigateSlide(direction) {
+      const currentSlideEl = document.getElementById('current-slide');
+      const progressBarEl = document.getElementById('progress-bar');
+      const progressPercentEl = document.getElementById('progress-percent');
+
+      const totalSlides = 16;
+      let current = parseInt(currentSlideEl.textContent, 10) || 1;
+
+      if (direction === 'next') {
+        if (current < totalSlides) {
+          current += 1;
+        }
+      } else if (direction === 'prev') {
+        if (current > 1) {
+          current -= 1;
+        }
+      }
+
+      // Update display (for a multi-slide setup this would also change location)
+      currentSlideEl.textContent = String(current).padStart(2, '0');
+
+      const progress = Math.round((current / totalSlides) * 100);
+      progressPercentEl.textContent = progress + '%';
+
+      // Simple ASCII bar recalculation (length 16 like example)
+      const totalBlocks = 16;
+      const filledBlocks = Math.round((progress / 100) * totalBlocks);
+      const bar = '█'.repeat(filledBlocks) + '░'.repeat(totalBlocks - filledBlocks);
+      progressBarEl.textContent = bar;
+    }
+
+    document.addEventListener('keydown', function(e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ':
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

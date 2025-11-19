@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced MCP Presentation - Cyberpunk Slide Deck</title>
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      color: var(--text-primary);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+      overflow-x: hidden;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    .slide-header {
+      padding: 1rem 2rem;
+      border-bottom: 2px solid var(--neon-cyan);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 255, 255, 0.08);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      color: var(--neon-cyan);
+      font-weight: bold;
+      text-shadow: var(--glow-cyan);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .slide-counter {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+    }
+
+    .slide-counter span {
+      color: var(--neon-green);
+      font-weight: bold;
+    }
+
+    /* MAIN CONTENT */
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin: 0 0 1rem 0;
+    }
+
+    .slide-subtitle {
+      font-size: 1.5rem;
+      color: var(--neon-green);
+      margin: 0 0 2rem 0;
+    }
+
+    .slide-content h2 {
+      font-size: 2rem;
+      color: var(--text-accent);
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .slide-content h3,
+    .slide-content h4 {
+      color: var(--neon-amber);
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .slide-content p,
+    .slide-content li {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .slide-content ul {
+      padding-left: 1.5rem;
+    }
+
+    /* ASCII block & code */
+    pre,
+    code {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      color: var(--neon-green);
+      border-radius: 4px;
+      font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+    }
+
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      white-space: pre;
+    }
+
+    code {
+      padding: 0.25rem 0.5rem;
+    }
+
+    .ascii-banner {
+      margin-top: 1.5rem;
+    }
+
+    /* GRID LAYOUTS */
+    .slide-grid,
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .slide-section-block {
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      padding: 1rem;
+      background: rgba(0, 255, 255, 0.03);
+    }
+
+    .slide-section-block h4 {
+      margin-top: 0;
+      color: var(--neon-cyan);
+    }
+
+    .slide-section-block a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      margin: 0.15rem 0;
+      border: 1px solid var(--neon-cyan);
+      border-radius: 3px;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .slide-section-block a:hover {
+      background: rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    .demo-setup-section {
+      border: 1px solid var(--neon-green);
+      padding: 1rem 1.25rem;
+      border-radius: 4px;
+      background: rgba(0, 255, 65, 0.08);
+      margin: 1.5rem 0;
+    }
+
+    .features-grid > div {
+      border: 1px solid var(--neon-green);
+      padding: 1rem;
+      border-radius: 4px;
+      background: rgba(0, 255, 65, 0.05);
+    }
+
+    /* HIGHLIGHT & DEMO BOXES (from guidelines) */
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .code-demo::before {
+      content: '> LIVE DEMO';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.08);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.08);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    /* GLITCH EFFECT (title option) */
+    .glitch {
+      position: relative;
+      color: var(--text-primary);
+      animation: glitch 2s infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .glitch::before {
+      color: var(--neon-magenta);
+      animation: glitch-1 2s infinite;
+    }
+
+    .glitch::after {
+      color: var(--neon-cyan);
+      animation: glitch-2 2s infinite;
+    }
+
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes glitch-1 {
+      0%, 100% { clip-path: inset(0 0 80% 0); }
+      50% { clip-path: inset(40% 0 40% 0); }
+    }
+
+    @keyframes glitch-2 {
+      0%, 100% { clip-path: inset(80% 0 0 0); }
+      50% { clip-path: inset(20% 0 60% 0); }
+    }
+
+    /* FOOTER NAVIGATION */
+    .slide-navigation {
+      text-align: center;
+      padding: 1.5rem 1rem 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.9rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-glow {
+      text-shadow: var(--glow-cyan);
+    }
+
+    .progress-container {
+      min-width: 220px;
+      color: var(--text-secondary);
+      font-family: 'Monaco', monospace;
+      font-size: 0.9rem;
+    }
+
+    .ascii-progress {
+      white-space: nowrap;
+    }
+
+    #progress-bar {
+      color: var(--neon-green);
+    }
+
+    #progress-percent {
+      color: var(--neon-amber);
+      margin-left: 0.25rem;
+    }
+
+    /* VISUAL EFFECTS */
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 255, 0.03) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.25;
+      z-index: 0;
+    }
+
+    /* ANIMATIONS */
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 2.5rem;
+      }
+
+      .slide-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-content {
+        padding: 1.25rem 1.5rem;
+      }
+
+      .slide-header {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+
+      .slide-title {
+        font-size: 2rem;
+      }
+
+      .slide-subtitle {
+        font-size: 1.2rem;
+      }
+
+      .nav-btn {
+        padding: 0.75rem 1.2rem;
+        font-size: 0.8rem;
+      }
+
+      .progress-container {
+        min-width: 180px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION SYSTEM
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">01</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content slide-enter">
+      <h1 class="slide-title glitch" data-text="ADVANCED MCP PRESENTATION">
+        ADVANCED MCP PRESENTATION
+      </h1>
+      <h2 class="slide-subtitle">Cyberpunk Slide Deck · Live Architecture &amp; Demos</h2>
+
+      <section class="fade-in">
+        <h2>🚀 WELCOME TO THE ADVANCED MCP PRESENTATION</h2>
+        <div class="ascii-banner">
+          <pre>
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║    ██████   ██████  ██    ██  █████  ███    ██  ██████ ███████   ║
+║   ██   ██  ██   ██  ██    ██ ██   ██ ████   ██ ██      ██        ║
+║   ███████  ██   ██  ██    ██ ███████ ██ ██  ██ ██      █████     ║
+║   ██   ██  ██   ██   ██  ██  ██   ██ ██  ██ ██ ██      ██        ║
+║   ██   ██  ██████     ████   ██   ██ ██   ████  ██████ ███████   ║
+║                                                                  ║
+║                        ███    ███  ██████ ██████                 ║
+║                        ████  ████ ██      ██   ██                ║
+║                        ██ ████ ██ ██      ██████                 ║
+║                        ██  ██  ██ ██      ██                     ║
+║                        ██      ██  ██████ ██                     ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+          </pre>
+        </div>
+      </section>
+
+      <section class="fade-in">
+        <h2>📋 PRESENTATION NAVIGATION</h2>
+        <div class="slide-grid">
+          <div class="slide-section-block">
+            <h4>Introduction Section</h4>
+            <ul>
+              <li><a href="01-title">Slide 1: Title Slide</a></li>
+              <li><a href="02-mcp-recap">Slide 2: MCP Recap</a></li>
+              <li><a href="03-advanced-focus">Slide 3: Advanced Focus</a></li>
+            </ul>
+          </div>
+
+          <div class="slide-section-block">
+            <h4>Core Architecture Section</h4>
+            <ul>
+              <li><a href="04-server-architecture">Slide 4: Server Architecture</a></li>
+              <li><a href="05-tools-heart">Slide 5: Tools - The Heart</a></li>
+              <li><a href="06-resources-context">Slide 6: Resources - Context</a></li>
+              <li><a href="07-prompt-templates">Slide 7: Prompt Templates</a></li>
+              <li><a href="08-sampling-model">Slide 8: Sampling Model</a></li>
+            </ul>
+          </div>
+
+          <div class="slide-section-block">
+            <h4>Advanced Patterns Section</h4>
+            <ul>
+              <li><a href="09-multi-server">Slide 9: Multi-Server Architecture</a></li>
+              <li><a href="10-live-demo">Slide 10: Live Demo</a></li>
+              <li><a href="11-tool-patterns">Slide 11: Tool Design Patterns</a></li>
+              <li><a href="12-security-practices">Slide 12: Security Practices</a></li>
+              <li><a href="13-deployment-performance">Slide 13: Deployment &amp; Performance</a></li>
+            </ul>
+          </div>
+
+          <div class="slide-section-block">
+            <h4>Workflows &amp; Conclusion Section</h4>
+            <ul>
+              <li><a href="14-workflow-examples">Slide 14: Advanced Workflows</a></li>
+              <li><a href="15-recap-takeaways">Slide 15: Recap &amp; Takeaways</a></li>
+              <li><a href="16-resources-questions">Slide 16: Resources &amp; Questions</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="fade-in">
+        <h2>🎮 LIVE DEMO PREPARATION</h2>
+        <div class="demo-setup-section">
+          <h3>Required Setup Commands:</h3>
+          <div class="code-demo">
+            <code>
+$ npx -y @modelcontextprotocol/server-everything
+$ npx -y @modelcontextprotocol/inspector
+            </code>
+          </div>
+
+          <h3>Demo Status:</h3>
+          <ul>
+            <li>✅ Everything MCP Server (Ready for launch)</li>
+            <li>✅ MCP Inspector (Ready for real-time exploration)</li>
+            <li>✅ Multi-server examples (Git + FS + DB)</li>
+            <li>✅ Security demonstrations (printEnv analysis)</li>
+            <li>✅ Performance monitoring (listRoots scoping)</li>
+          </ul>
+
+          <div class="demo-note">
+            :: Launching MCP Inspector...
+            <br />
+            [SUCCESS] Server connected
+            <br />
+            [INFO] Tools loaded: 8
+            <br />
+            [DEMO] Ready for live demonstration
+          </div>
+        </div>
+      </section>
+
+      <section class="fade-in">
+        <h2>🎯 PRESENTATION FEATURES</h2>
+        <div class="features-grid">
+          <div>
+            <h3>🎨 Cyberpunk Aesthetic</h3>
+            <ul>
+              <li>Classic matrix-style visuals</li>
+              <li>Neon color schemes and glow effects</li>
+              <li>Terminal-inspired navigation</li>
+              <li>ASCII art and retro-futuristic design</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>🔧 Technical Content</h3>
+            <ul>
+              <li>All 4 MCP primitives covered</li>
+              <li>Live demonstrations throughout</li>
+              <li>Architecture diagrams and patterns</li>
+              <li>Production-ready security and scaling</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3>⏱️ 30-Minute Format</h3>
+            <ul>
+              <li>Focused on demos and architecture</li>
+              <li>Minimal text, maximum visual impact</li>
+              <li>Interactive exploration opportunities</li>
+              <li>Q&amp;A preparation included</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="concept-highlight">
+          <strong>ADVANCED MCP CONCEPTS</strong>
+          <pre>
+└── TOOLS ──┐
+├── RESOURCES ──┐
+├── PROMPTS ──┐
+└── SAMPLING ──┘
+
+&gt;&gt;&gt; DEMO TIME &lt;&lt;&lt;
+
+▶ NEXT CONCEPT ▶
+          </pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar">████░░░░░░░░░░░░</span>]
+            <span id="progress-percent">6%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Basic slide navigation logic
+    const TOTAL_SLIDES = 16;
+    let currentSlide = 1; // This page is effectively slide 1
+
+    const currentSlideEl = document.getElementById('current-slide');
+    const progressBarEl = document.getElementById('progress-bar');
+    const progressPercentEl = document.getElementById('progress-percent');
+    const prevBtn = document.getElementById('prev-slide');
+    const nextBtn = document.getElementById('next-slide');
+
+    function updateProgressUI() {
+      if (!currentSlideEl || !progressBarEl || !progressPercentEl) return;
+      currentSlideEl.textContent = String(currentSlide).padStart(2, '0');
+
+      const pct = Math.round((currentSlide / TOTAL_SLIDES) * 100);
+      progressPercentEl.textContent = pct + '%';
+
+      const totalBlocks = 16; // ASCII bar segments
+      const filledBlocks = Math.round((pct / 100) * totalBlocks);
+      const bar = '█'.repeat(filledBlocks) + '░'.repeat(totalBlocks - filledBlocks);
+      progressBarEl.textContent = bar;
+    }
+
+    function navigateSlide(direction) {
+      if (direction === 'next') {
+        if (currentSlide < TOTAL_SLIDES) currentSlide += 1;
+      } else if (direction === 'prev') {
+        if (currentSlide > 1) currentSlide -= 1;
+      }
+
+      updateProgressUI();
+
+      // Optional: update URL pattern if you have per-slide pages
+      // Example: window.location.href = currentSlide.toString().padStart(2, '0') + '-title';
+      // For this template, we just animate the main content.
+      const main = document.querySelector('.slide-content');
+      if (main) {
+        main.classList.remove('slide-enter');
+        void main.offsetWidth; // force reflow to restart animation
+        main.classList.add('slide-enter');
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => navigateSlide('prev'));
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => navigateSlide('next'));
+    }
+
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ': // space
+        case 'PageDown':
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+        case 'PageUp':
+          navigateSlide('prev');
+          break;
+        case 'Home':
+          currentSlide = 1;
+          updateProgressUI();
+          break;
+        case 'End':
+          currentSlide = TOTAL_SLIDES;
+          updateProgressUI();
+          break;
+      }
+    });
+
+    // Initialize
+    updateProgressUI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slide 12 - Security Best Practices</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      color: var(--text-primary);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      font-family: 'Monaco', monospace;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 20, 0.9);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-size: 1rem;
+    }
+
+    .slide-counter {
+      font-family: 'Courier New', monospace;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      font-size: 0.9rem;
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-family: 'Courier New', 'Monaco', monospace;
+      margin-bottom: 1.5rem;
+    }
+
+    .subtitle-accent {
+      font-size: 1.2rem;
+      color: var(--neon-amber);
+      margin-left: 0.5rem;
+    }
+
+    h2, h3 {
+      color: var(--text-accent);
+      margin: 1.5rem 0 0.75rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.4rem; }
+
+    p, li {
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    ul {
+      margin-left: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    .code-demo, pre code {
+      font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.2rem 1.4rem;
+      margin: 1rem 0;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      white-space: pre;
+      display: block;
+    }
+
+    .code-demo::before {
+      content: '> LIVE DEMO';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .ascii-block {
+      font-family: 'Fira Code', 'Monaco', monospace;
+      white-space: pre;
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      padding: 1.2rem 1.4rem;
+      margin: 1rem 0;
+      color: var(--neon-cyan);
+      overflow-x: auto;
+      font-size: 0.85rem;
+    }
+
+    .pattern-grid,
+    .audit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .pattern-grid > div,
+    .audit-grid > div {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      padding: 1rem;
+      border-radius: 4px;
+    }
+
+    .production-checklist pre {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-amber);
+      border-radius: 4px;
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--neon-amber);
+      white-space: pre;
+    }
+
+    .slide-navigation {
+      padding: 1rem 2.5rem;
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 20, 0.9);
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.8rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn .btn-glow {
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+      z-index: 1;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      color: var(--neon-cyan);
+      margin-left: 0.4rem;
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 255, 0.03) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(0, 255, 255, 0.3);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .demo-ready {
+      color: var(--neon-green);
+    }
+
+    .next-indicator {
+      color: var(--neon-cyan);
+    }
+
+    .security-overview,
+    .security-patterns,
+    .demo-section,
+    .validation-patterns,
+    .production-checklist {
+      margin-bottom: 2rem;
+    }
+
+    .slide-section-title {
+      font-size: 1.8rem;
+      color: var(--text-accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .security-patterns .pattern-grid > div h3,
+    .audit-grid > div h3 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .security-patterns .pattern-grid > div p,
+    .audit-grid > div p {
+      font-size: 1rem;
+    }
+
+    .tagline-small {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .subtitle-section-label {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    code.inline-code {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 0.1rem 0.3rem;
+      border-radius: 3px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      font-size: 0.9rem;
+      color: var(--neon-green);
+    }
+
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 2.5rem;
+      }
+      .slide-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+      .slide-title {
+        font-size: 2rem;
+      }
+      .slide-header,
+      .slide-navigation {
+        padding: 0.75rem 1.25rem;
+      }
+      .nav-btn {
+        padding: 0.7rem 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">12</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content slide-enter">
+      <div class="slide-header-inner">
+        <h1 class="slide-title">
+          &gt; SECURITY BEST PRACTICES <span class="subtitle-accent">[PRODUCTION READY]</span>
+        </h1>
+      </div>
+
+      <section class="security-overview fade-in">
+        <div class="section-header">
+          <h2 class="slide-section-title">&#9654; ENTERPRISE SECURITY ARCHITECTURE</h2>
+          <div class="subtitle-section-label">OAUTH2 · VALIDATION · AUDIT · SANDBOX</div>
+        </div>
+
+        <div class="concept-highlight">
+          <strong>OAuth2 authentication, input validation, audit logs, and sandboxed execution</strong>
+        </div>
+
+        <div class="ascii-block" aria-label="Security architecture diagram in ASCII">
+┌──────────────────────────────────────────────────────────────────┐
+│                     SECURITY ARCHITECTURE                       │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌─────────────┐    OAuth2/JWT    ┌─────────────┐               │
+│  │   CLIENT    │◄────────────────►│ AUTH SERVER │               │
+│  │  (Claude)   │                  │             │               │
+│  └─────────────┘                  └─────────────┘               │
+│         │                                 │                     │
+│         ▼          Validated Token        ▼                     │
+│  ┌─────────────┐                  ┌─────────────┐               │
+│  │ MCP SERVER  │◄─────────────────┤ VALIDATION  │               │
+│  │             │                  │ MIDDLEWARE  │               │
+│  └─────────────┘                  └─────────────┘               │
+│         │                                                       │
+│         ▼                                                       │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐       │
+│  │INPUT VALID  │────►│SANDBOX EXEC │────►│AUDIT LOGGER │       │
+│  │ + SCHEMA    │     │ + LIMITS    │     │ + MONITOR   │       │
+│  └─────────────┘     └─────────────┘     └─────────────┘       │
+│                                                                  │
+│  Multi-layered security with defense in depth principles        │
+└──────────────────────────────────────────────────────────────────┘
+        </div>
+      </section>
+
+      <section class="security-patterns fade-in">
+        <h2>&#9654; CRITICAL SECURITY PATTERNS</h2>
+        <div class="pattern-grid">
+          <div>
+            <h3>🔐 AUTHENTICATION</h3>
+            <p>OAuth2 for HTTP servers, token validation</p>
+          </div>
+          <div>
+            <h3>✅ INPUT VALIDATION</h3>
+            <p>Schema enforcement, type checking, bounds validation</p>
+          </div>
+          <div>
+            <h3>🏰 SANDBOXING</h3>
+            <p>Restricted file access, process isolation, resource limits</p>
+          </div>
+        </div>
+
+        <h2>&#9654; ROOTS-BASED ACCESS CONTROL</h2>
+        <pre class="code-demo"><code class="language-json">{
+  "server_config": {
+    "name": "secure-filesystem",
+    "roots": [
+      {
+        "uri": "file:///workspace/project1",
+        "name": "Project 1 Files",
+        "description": "Read/write access to project files only"
+      },
+      {
+        "uri": "file:///shared/docs",
+        "name": "Shared Documentation",
+        "description": "Read-only access to documentation"
+      }
+    ]
+  }
+}</code></pre>
+
+        <h3>Access Control Benefits:</h3>
+        <ul>
+          <li><strong>Scope Limitation</strong>: Servers can only access defined roots</li>
+          <li><strong>Path Traversal Prevention</strong>: Cannot access parent directories</li>
+          <li><strong>Audit Trail</strong>: All file operations logged with root context</li>
+          <li><strong>Principle of Least Privilege</strong>: Minimal necessary permissions</li>
+        </ul>
+      </section>
+
+      <section class="demo-section fade-in">
+        <h2>🎮 LIVE DEMO: SECURITY CONSIDERATIONS</h2>
+
+        <div class="demo-note">
+          <strong>DEMONSTRATION:</strong> <code class="inline-code">printEnv</code> tool - safe for local debug, dangerous remotely
+        </div>
+
+        <pre class="code-demo"><code class="language-shell">$ mcp-inspector
+&gt; Examine printEnv tool security implications
+
+[LOCAL DEVELOPMENT]
+Call: printEnv()
+Result: {
+  "NODE_ENV": "development",
+  "PATH": "/usr/local/bin:/usr/bin",
+  "HOME": "/Users/developer",
+  "DEMO_MODE": "true"
+}
+Status: ✅ Safe - controlled environment
+
+[PRODUCTION DEPLOYMENT]
+Call: printEnv()
+Security Risk: ❌ HIGH RISK
+Reason: Could expose:
+  - Database credentials
+  - API keys and secrets
+  - Internal service URLs
+  - System configuration details
+
+[MITIGATION]
+- Environment filtering
+- Production mode restrictions
+- Audit logging for sensitive operations
+- Role-based access controls</code></pre>
+
+        <h3>Security Assessment Framework:</h3>
+        <ol>
+          <li><strong>Risk Classification</strong>: Low/Medium/High/Critical</li>
+          <li><strong>Environment Context</strong>: Development vs Production</li>
+          <li><strong>Data Sensitivity</strong>: Public vs Internal vs Secret</li>
+          <li><strong>Access Controls</strong>: Who can execute what tools</li>
+        </ol>
+      </section>
+
+      <section class="validation-patterns fade-in">
+        <h2>&#9654; INPUT VALIDATION &amp; SCHEMA ENFORCEMENT</h2>
+        <pre class="code-demo"><code class="language-python">from pydantic import BaseModel, validator
+from typing import Literal
+
+class SecureToolInput(BaseModel):
+    file_path: str
+    operation: Literal["read", "write", "delete"]
+    max_size_bytes: int = 1024 * 1024  # 1MB default
+
+    @validator('file_path')
+    def validate_file_path(cls, v):
+        # Prevent path traversal
+        if '..' in v or v.startswith('/'):
+            raise ValueError("Invalid file path")
+        return v
+
+    @validator('max_size_bytes')
+    def validate_size(cls, v):
+        if v &gt; 10 * 1024 * 1024:  # 10MB max
+            raise ValueError("File size exceeds limit")
+        return v</code></pre>
+
+        <h2>&#9654; AUDIT &amp; MONITORING</h2>
+        <div class="audit-grid">
+          <div>
+            <h3>📊 COMPREHENSIVE LOGGING</h3>
+            <p>All tool executions, parameter values, results</p>
+          </div>
+          <div>
+            <h3>🚨 ANOMALY DETECTION</h3>
+            <p>Unusual patterns, failed authentications, suspicious activity</p>
+          </div>
+          <div>
+            <h3>📈 PERFORMANCE MONITORING</h3>
+            <p>Resource usage, response times, error rates</p>
+          </div>
+          <div>
+            <h3>🔍 FORENSIC CAPABILITIES</h3>
+            <p>Full request/response chains for security analysis</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="production-checklist fade-in" name="production-checklist">
+        <h2>✅ PRODUCTION SECURITY CHECKLIST</h2>
+        <pre><code>├── Authentication       │ OAuth2/JWT token validation
+├── Authorization        │ Role-based access controls (RBAC)
+├── Input Validation     │ Schema enforcement, bounds checking
+├── Output Sanitization  │ Prevent data leakage, XSS protection
+├── Audit Logging        │ Comprehensive request/response logging
+├── Rate Limiting        │ Prevent abuse and DoS attacks
+├── Encryption           │ TLS in transit, encryption at rest
+├── Sandbox Execution    │ Process isolation, resource limits
+├── Dependency Security  │ Regular security updates, CVE monitoring
+└── Incident Response    │ Alerting, containment, recovery procedures</code></pre>
+      </section>
+
+      <div class="slide-footer fade-in">
+        <span class="demo-ready">🎮 SECURITY DEMO READY</span>
+        <span class="next-indicator">▶ NEXT: Deployment &amp; Performance</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='11-tool-patterns'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar" class="progress-bar">████████████░░░░</span>]
+            <span id="progress-percent" class="progress-percent">75%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='13-deployment-performance'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Basic keyboard navigation wiring for this static slide
+    function navigateSlide(direction) {
+      if (direction === 'next') {
+        window.location.href = '13-deployment-performance';
+      } else if (direction === 'prev') {
+        window.location.href = '11-tool-patterns';
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ': // Space
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

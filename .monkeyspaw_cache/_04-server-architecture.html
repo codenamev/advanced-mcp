@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slide 04 - Core Server Architecture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0d1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00ffff;
+      --neon-green: #00ff41;
+      --neon-magenta: #ff00ff;
+      --neon-amber: #ffb000;
+
+      /* Text Colors */
+      --text-primary: #e6e6e6;
+      --text-secondary: #b3b3b3;
+      --text-accent: #00ffff;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+      --glow-green: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 30px #00ff41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      color: var(--text-primary);
+      font-family: "Monaco", "Consolas", "Courier New", monospace;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      font-family: "Monaco", monospace;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: "Courier New", "Monaco", monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-size: 1rem;
+    }
+
+    .slide-counter {
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      font-size: 0.9rem;
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-family: "Courier New", "Monaco", monospace;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .slide-title .subtitle-accent {
+      font-size: 1.2rem;
+      color: var(--neon-amber);
+      margin-left: 0.5rem;
+    }
+
+    .architecture-overview h2,
+    .architecture-overview h3 {
+      font-size: 2rem;
+      color: var(--text-accent);
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .architecture-overview h3 {
+      font-size: 1.5rem;
+    }
+
+    .architecture-overview h2::before {
+      content: "";
+      border-left: 4px solid var(--neon-cyan);
+      margin-right: 0.5rem;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin: 1rem 0 2rem;
+    }
+
+    .design-grid > div,
+    .design-grid > section {
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 1rem;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .design-grid h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+      color: var(--neon-green);
+    }
+
+    .design-grid p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      font-family: "Fira Code", monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+
+    .code-demo::before {
+      content: "> LIVE DEMO";
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.8rem;
+    }
+
+    .code-demo pre {
+      margin: 0;
+      white-space: pre;
+    }
+
+    .ascii-diagram {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-cyan);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: "Fira Code", monospace;
+      color: var(--neon-cyan);
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+
+    .demo-section {
+      margin-top: 2rem;
+    }
+
+    .demo-section h2 {
+      font-size: 2rem;
+      color: var(--text-accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    .terminal-block {
+      background: #02020f;
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      border-radius: 4px;
+      padding: 1rem 1.5rem;
+      font-family: "Fira Code", monospace;
+      color: var(--neon-green);
+      margin: 1rem 0 1.5rem;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+
+    .terminal-block::before {
+      content: ":: TERMINAL ::";
+      position: relative;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      color: var(--neon-cyan);
+      font-size: 0.8rem;
+    }
+
+    .demo-key-observations {
+      margin-top: 1rem;
+    }
+
+    .demo-key-observations h3 {
+      font-size: 1.4rem;
+      color: var(--neon-green);
+      margin-bottom: 0.5rem;
+    }
+
+    .demo-key-observations ul {
+      list-style: square;
+      padding-left: 1.5rem;
+      color: var(--text-primary);
+    }
+
+    .demo-key-observations li {
+      margin-bottom: 0.3rem;
+      line-height: 1.4;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .demo-ready {
+      color: var(--neon-magenta);
+      text-shadow: 0 0 6px rgba(255, 0, 255, 0.8);
+      font-weight: bold;
+    }
+
+    .next-indicator {
+      color: var(--neon-cyan);
+    }
+
+    .slide-navigation {
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 1rem 2.5rem 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.8rem 1.8rem;
+      font-family: "Monaco", monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-glow {
+      text-shadow: var(--glow-cyan);
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .ascii-progress {
+      font-family: "Courier New", monospace;
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      margin-left: 0.5rem;
+      color: var(--neon-cyan);
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(4px);
+      }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.3;
+      z-index: 1;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from {
+        transform: translateX(100px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 3rem;
+      }
+
+      .slide-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-header {
+        padding: 0.8rem 1.5rem;
+      }
+
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+
+      .slide-title {
+        font-size: 2rem;
+      }
+
+      .nav-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .progress-container {
+        order: 3;
+      }
+
+      .nav-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .architecture-overview h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container slide-enter">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">04</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content fade-in">
+      <div class="slide-header">
+        <h1 class="slide-title">
+          &gt; CORE SERVER ARCHITECTURE <span class="subtitle-accent">[FOUNDATION]</span>
+        </h1>
+      </div>
+
+      <div class="architecture-overview">
+        <section class="mcp-foundation">
+          <h2>▶ MCP SDK FOUNDATION</h2>
+          <div class="concept-highlight">
+            <strong>Use MCP SDKs (Python, Go, Java) to expose tools with minimal boilerplate</strong>
+          </div>
+
+          <div class="code-demo">
+            <pre><code># Everything Server Example
+from mcp import Server
+from mcp.server import stdio_server
+
+server = Server("everything-server")
+
+@server.tool()
+async def echo(message: str) -&gt; str:
+    """Echo back the input message."""
+    return f"Echo: {message}"</code></pre>
+          </div>
+        </section>
+
+        <section class="design-principles">
+          <h2>▶ DESIGN PRINCIPLES</h2>
+          <div class="design-grid">
+            <section>
+              <h3>🎯 MODULAR DESIGN</h3>
+              <p>One domain per server - focused, composable toolboxes</p>
+            </section>
+            <section>
+              <h3>🔄 STATELESS FUNCTIONS</h3>
+              <p>Idempotent tool functions - predictable, reliable operations</p>
+            </section>
+            <section>
+              <h3>🚀 TRANSPORT OPTIONS</h3>
+              <p>stdio vs HTTP/SSE - choose based on deployment needs</p>
+            </section>
+          </div>
+        </section>
+
+        <section class="everything-architecture">
+          <h2>▶ EVERYTHING SERVER ARCHITECTURE</h2>
+          <div class="ascii-diagram">
+            <pre><code>┌─────────────────────────────────────────────────────────────┐
+│                  EVERYTHING MCP SERVER                      │
+├─────────────────────────────────────────────────────────────┤
+│  TOOLS          │  RESOURCES      │  PROMPTS      │ SAMPLING│
+│  ├─ echo        │  ├─ static/42   │  ├─ simple    │ ├─ llm  │
+│  ├─ add         │  ├─ dynamic     │  ├─ resource  │ └─ comp │
+│  ├─ longOp      │  └─ subscribe   │  └─ complex   │         │
+│  └─ annotated   │                 │               │         │
+├─────────────────────────────────────────────────────────────┤
+│         MCP Protocol Layer (stdio/HTTP transport)          │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+          </div>
+        </section>
+      </div>
+
+      <div class="demo-section">
+        <h2>🎮 LIVE DEMO SETUP</h2>
+        <div class="demo-note">
+          <strong>DEMONSTRATION:</strong> Everything Server's add &amp; echo tools - minimal schema, fast feedback
+        </div>
+
+        <div class="terminal-block">
+          <pre><code>$ npx -y @modelcontextprotocol/server-everything
+[DEMO] Launch Everything Server
+[INSPECT] Examine tool definitions and schemas
+[TEST] Call echo and add tools directly
+[OBSERVE] Response structure and metadata</code></pre>
+        </div>
+
+        <div class="demo-key-observations">
+          <h3>Key Observations:</h3>
+          <ul>
+            <li><strong>Fast feedback loop</strong> - immediate tool response</li>
+            <li><strong>Minimal schema</strong> - clear, focused tool definitions</li>
+            <li><strong>Error handling</strong> - graceful failure modes</li>
+            <li><strong>Metadata structure</strong> - consistent response format</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span class="demo-ready">🎮 DEMO READY</span>
+        <span class="next-indicator">▶ NEXT: Tools - The Heart of MCP</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='03-advanced-focus'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar" class="progress-bar">████░░░░░░░░░░░░</span>]
+            <span id="progress-percent" class="progress-percent">25%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='05-tools-heart'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    // Basic navigation functionality hook
+    function navigateSlide(direction) {
+      const current = 4; // fixed for this static slide
+      const total = 16;
+      let target = current;
+
+      if (direction === 'next' && current < total) {
+        target = current + 1;
+        window.location.href = '05-tools-heart';
+      } else if (direction === 'prev' && current > 1) {
+        target = current - 1;
+        window.location.href = '03-advanced-focus';
+      }
+
+      // progress bar / percent could be dynamically updated in a multi-slide app
+    }
+
+    document.getElementById('next-slide').addEventListener('click', function () {
+      navigateSlide('next');
+    });
+
+    document.getElementById('prev-slide').addEventListener('click', function () {
+      navigateSlide('prev');
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ':
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

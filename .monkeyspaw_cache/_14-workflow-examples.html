@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide 14 - Advanced Workflow Examples</title>
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: var(--text-primary);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      font-family: 'Monaco', monospace;
+      color: var(--text-primary);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-size: 1rem;
+    }
+
+    .slide-counter {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      font-size: 0.9rem;
+    }
+
+    .slide-counter span {
+      color: var(--neon-amber);
+    }
+
+    .slide-content {
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      font-family: 'Courier New', 'Monaco', monospace;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle-accent {
+      color: var(--neon-amber);
+      font-size: 1.4rem;
+      margin-left: 0.5rem;
+    }
+
+    .slide-content h2 {
+      font-size: 2rem;
+      color: var(--text-accent);
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    .slide-content h3 {
+      font-size: 1.4rem;
+      color: var(--neon-magenta);
+      margin: 1rem 0 0.5rem;
+    }
+
+    .slide-content p,
+    .slide-content li {
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .slide-content ul {
+      padding-left: 1.2rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.08);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .concept-highlight strong {
+      color: var(--neon-amber);
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.08);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.2rem 1.5rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      white-space: pre;
+    }
+
+    .code-demo::before {
+      content: '> LIVE DEMO';
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--cyber-black);
+      color: var(--neon-cyan);
+      padding: 0 10px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    .code-demo.terminal::before {
+      content: '$ TERMINAL DEMO';
+    }
+
+    .workflow-overview,
+    .demo-workflows,
+    .real-world-examples,
+    .live-subscription-demo,
+    .enterprise-patterns {
+      margin-top: 1.5rem;
+    }
+
+    .ascii-box {
+      background: var(--cyber-darker);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-cyan);
+      font-size: 0.85rem;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .integration-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .integration-grid > div,
+    .integration-grid > p {
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    .integration-grid h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .observability-block {
+      background: var(--cyber-darker);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      padding: 1rem 1.2rem;
+      margin-top: 1rem;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-cyan);
+      font-size: 0.85rem;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .slide-footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .live-indicator {
+      color: var(--neon-green);
+    }
+
+    .next-indicator {
+      color: var(--neon-cyan);
+    }
+
+    .slide-navigation {
+      border-top: 1px solid rgba(0, 255, 255, 0.3);
+      padding: 1rem 2.5rem 1.5rem;
+      background: rgba(0, 0, 0, 0.8);
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto;
+      gap: 1.5rem;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.8rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-glow {
+      position: relative;
+      z-index: 1;
+    }
+
+    .progress-container {
+      flex: 1;
+      text-align: center;
+      color: var(--text-secondary);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .ascii-progress {
+      display: inline-block;
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      margin-left: 0.4rem;
+      color: var(--neon-amber);
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 255, 0.03) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.2;
+      z-index: 0;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .glitch {
+      position: relative;
+      color: var(--text-primary);
+      animation: glitch 2s infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .glitch::before {
+      color: var(--neon-magenta);
+      animation: glitch-1 2s infinite;
+    }
+
+    .glitch::after {
+      color: var(--neon-cyan);
+      animation: glitch-2 2s infinite;
+    }
+
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+    }
+
+    @keyframes glitch-1 {
+      0%, 100% { clip: rect(0, 9999px, 0, 0); }
+      20% { clip: rect(5px, 9999px, 20px, 0); }
+      40% { clip: rect(10px, 9999px, 30px, 0); }
+      60% { clip: rect(15px, 9999px, 25px, 0); }
+      80% { clip: rect(8px, 9999px, 22px, 0); }
+    }
+
+    @keyframes glitch-2 {
+      0%, 100% { clip: rect(0, 9999px, 0, 0); }
+      20% { clip: rect(10px, 9999px, 25px, 0); }
+      40% { clip: rect(3px, 9999px, 18px, 0); }
+      60% { clip: rect(8px, 9999px, 28px, 0); }
+      80% { clip: rect(12px, 9999px, 24px, 0); }
+    }
+
+    .subscription-benefits ul {
+      list-style: disc;
+      padding-left: 1.5rem;
+    }
+
+    .subscription-benefits li {
+      margin: 0.2rem 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-content {
+        padding: 1.5rem 3rem;
+      }
+      .slide-title {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 1rem 1.5rem;
+      }
+      .slide-content {
+        padding: 1rem 1.5rem;
+      }
+      .slide-title {
+        font-size: 2rem;
+      }
+      .nav-controls {
+        flex-direction: column;
+      }
+      .nav-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container slide-enter">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">14</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content fade-in">
+      <div class="slide-header">
+        <h1 class="slide-title">
+          &gt; ADVANCED WORKFLOW EXAMPLES <span class="subtitle-accent">[END-TO-END]</span>
+        </h1>
+      </div>
+
+      <div class="workflow-overview">
+        <h2>▶ COMPLETE AI WORKFLOW PATTERNS</h2>
+        <div class="concept-highlight">
+          <strong>Claude: resource → prompt → sampling → action - combining all four MCP primitives</strong>
+        </div>
+        <div class="ascii-box">
+┌──────────────────────────────────────────────────────────────────┐
+│                    COMPLETE WORKFLOW CHAIN                      │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. RESOURCE      2. PROMPT       3. SAMPLING     4. ACTION      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ ┌───────────┐ │
+│  │ Load data   │─►│ Template    │─►│ AI analysis │►│ Execute   │ │
+│  │ from URI    │  │ with args   │  │ &amp; decision  │ │ tool call │ │
+│  └─────────────┘  └─────────────┘  └─────────────┘ └───────────┘ │
+│                                                                  │
+│  Claude orchestrates the entire chain intelligently             │
+└──────────────────────────────────────────────────────────────────┘
+        </div>
+      </div>
+
+      <div class="demo-workflows">
+        <h2>🎮 LIVE DEMO WORKFLOWS</h2>
+
+        <section>
+          <h3>📊 WORKFLOW 1: AI DATA ANALYSIS</h3>
+          <div class="demo-note">
+            <strong>DEMONSTRATION:</strong> Use <code>sampleLLM</code> to write markdown summary from resource
+          </div>
+          <div class="code-demo terminal">
+$ mcp-inspector
+&gt; Multi-step workflow demonstration
+
+STEP 1: Load Resource
+&gt; Browse to test://static/resource/42
+&gt; Data: {"metrics": [...], "timestamp": "2025-11-19T10:45:00Z"}
+
+STEP 2: Apply Prompt Template
+&gt; Select resource_prompt template
+&gt; Set resource_uri: "test://static/resource/42"
+&gt; Generate analysis prompt
+
+STEP 3: AI Sampling
+&gt; Call sampleLLM with generated prompt
+&gt; AI analyzes resource data
+&gt; Produces structured markdown summary
+
+STEP 4: Action (Optional)
+&gt; Save summary as new resource
+&gt; Trigger notification workflow
+&gt; Update dashboard display
+
+[RESULT] Complete AI-driven data analysis pipeline
+          </div>
+        </section>
+
+        <section>
+          <h3>🎨 WORKFLOW 2: MULTI-MODAL CREATION</h3>
+          <div class="demo-note">
+            <strong>DEMONSTRATION:</strong> Combine <code>complex_prompt</code> + <code>getTinyImage</code> to mix modalities
+          </div>
+          <div class="code-demo terminal">
+STEP 1: Complex Prompt Generation
+&gt; Execute complex_prompt with creative parameters
+&gt; Generate detailed image description
+
+STEP 2: Image Generation
+&gt; Call getTinyImage with AI-generated description
+&gt; Create visual content based on prompt
+
+STEP 3: Multi-Modal Output
+&gt; Combine text analysis + generated image
+&gt; Create rich content presentation
+
+[RESULT] AI-generated content with both text and visuals
+          </div>
+        </section>
+      </div>
+
+      <div class="real-world-examples">
+        <h2>▶ PRODUCTION WORKFLOW PATTERNS</h2>
+
+        <section>
+          <h3>🔄 AUTOMATED CODE REVIEW</h3>
+          <div class="code-demo">
+```python
+# Multi-server workflow example
+async def automated_code_review_workflow():
+    # 1. Resource: Get changed files from Git
+    changed_files = await git_server.call_tool("git_diff", {"format": "unified"})
+
+    # 2. Prompt: Apply code review template
+    review_prompt = await prompt_server.get_prompt(
+        "code_review_template",
+        {"diff_content": changed_files, "language": "python"}
+    )
+
+    # 3. Sampling: AI analyzes code quality
+    ai_review = await sampling_server.call_tool(
+        "sampleLLM",
+        {"prompt": review_prompt}
+    )
+
+    # 4. Action: Post review comments
+    await git_server.call_tool(
+        "post_review_comment",
+        {"content": ai_review, "pr_id": pr_id}
+    )
+```
+          </div>
+        </section>
+
+        <section>
+          <h3>📈 REAL-TIME MONITORING PIPELINE</h3>
+          <div class="code-demo">
+```yaml
+workflow_name: "performance_monitoring"
+triggers:
+  - schedule: "*/5 minutes"
+  - webhook: "/alerts/performance"
+
+steps:
+  1. resource_collection:
+     - server: monitoring_server
+     - tool: collect_metrics
+     - output: metrics_resource_uri
+
+  2. analysis_prompt:
+     - server: prompt_server
+     - template: performance_analysis
+     - args: {resource_uri: "${step1.metrics_resource_uri}"}
+
+  3. ai_assessment:
+     - server: ai_server
+     - tool: sampleLLM
+     - input: "${step2.rendered_prompt}"
+
+  4. alert_action:
+     - server: notification_server
+     - tool: send_alert
+     - condition: "${step3.severity} > 'warning'"
+```
+          </div>
+        </section>
+      </div>
+
+      <div class="live-subscription-demo">
+        <h2>🎮 LIVE DEMO: SUBSCRIPTION WORKFLOWS</h2>
+        <div class="demo-note">
+          <strong>DEMONSTRATION:</strong> Subscribed resource auto-refresh visible in Inspector
+        </div>
+        <div class="code-demo terminal">
+$ mcp-inspector
+&gt; Navigate to Resources tab
+&gt; Subscribe to test://static/resource/42
+&gt; Watch real-time updates trigger workflow chains
+
+[T+00s] Resource updated → Trigger analysis workflow
+[T+00s] AI processes new data → Generate insights
+[T+01s] Workflow completes → Update dashboard
+[T+05s] Resource updated → Repeat cycle
+
+[AUTOMATION] Fully automated reactive workflows
+[EFFICIENCY] Only processes when data changes
+[SCALABILITY] Multiple subscribers, single source
+        </div>
+
+        <div class="subscription-benefits">
+          <h3>Subscription Benefits:</h3>
+          <ul>
+            <li><strong>Event-Driven</strong>: Only executes when data changes</li>
+            <li><strong>Resource Efficient</strong>: No polling overhead</li>
+            <li><strong>Real-Time Response</strong>: Immediate workflow triggers</li>
+            <li><strong>Parallel Processing</strong>: Multiple workflows can subscribe</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="enterprise-patterns">
+        <h2>▶ ENTERPRISE INTEGRATION PATTERNS</h2>
+        <div class="integration-grid">
+          <div>
+            <h3>🔗 API GATEWAY INTEGRATION</h3>
+            <p>MCP servers behind enterprise API management</p>
+          </div>
+          <div>
+            <h3>📊 WORKFLOW ORCHESTRATION</h3>
+            <p>Integration with tools like Airflow, Temporal</p>
+          </div>
+          <div>
+            <h3>🔐 IDENTITY FEDERATION</h3>
+            <p>SSO integration with corporate identity providers</p>
+          </div>
+          <div>
+            <h3>📈 BUSINESS INTELLIGENCE</h3>
+            <p>AI workflows feeding into BI dashboards</p>
+          </div>
+        </div>
+
+        <h2>▶ OBSERVABILITY IN WORKFLOWS</h2>
+        <div class="observability-block">
+├── Distributed Tracing    │ Follow requests across multiple servers
+├── Workflow Metrics       │ Success rates, execution times, bottlenecks
+├── Business Metrics       │ ROI, productivity gains, quality improvements
+├── Error Analysis         │ Failure modes, recovery patterns, prevention
+└── Performance Tuning     │ Optimization opportunities, resource usage
+        </div>
+      </div>
+
+      <div class="slide-footer-meta">
+        <span class="live-indicator">● MULTI-MODAL DEMOS ACTIVE</span>
+        <span class="next-indicator">▶ NEXT: Key Takeaways</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" id="prev-slide" onclick="window.location.href='13-deployment-performance'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span id="progress-bar" class="progress-bar">██████████████░░</span>]
+            <span id="progress-percent" class="progress-percent">87%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" id="next-slide" onclick="window.location.href='15-recap-takeaways'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    function navigateSlide(direction) {
+      const currentSlideEl = document.getElementById('current-slide');
+      const progressBarEl = document.getElementById('progress-bar');
+      const progressPercentEl = document.getElementById('progress-percent');
+      const totalSlides = 16;
+
+      let current = parseInt(currentSlideEl.textContent, 10) || 14;
+      if (direction === 'next' && current < totalSlides) {
+        current++;
+      } else if (direction === 'prev' && current > 1) {
+        current--;
+      }
+
+      currentSlideEl.textContent = String(current).padStart(2, '0');
+
+      const percent = Math.round((current / totalSlides) * 100);
+      progressPercentEl.textContent = percent + '%';
+
+      const totalBlocks = 14;
+      const filledBlocks = Math.round((percent / 100) * totalBlocks);
+      const bar = '█'.repeat(filledBlocks) + '░'.repeat(totalBlocks - filledBlocks);
+      progressBarEl.textContent = bar;
+    }
+
+    document.getElementById('next-slide').addEventListener('click', function (e) {
+      navigateSlide('next');
+    });
+
+    document.getElementById('prev-slide').addEventListener('click', function (e) {
+      navigateSlide('prev');
+    });
+
+    document.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ':
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide 07 - Prompt Templates</title>
+  <style>
+    :root {
+      /* Dark Backgrounds */
+      --cyber-black: #000011;
+      --cyber-dark: #0D1117;
+      --cyber-darker: #0a0a0a;
+
+      /* Neon Accents */
+      --neon-cyan: #00FFFF;
+      --neon-green: #00FF41;
+      --neon-magenta: #FF00FF;
+      --neon-amber: #FFB000;
+
+      /* Text Colors */
+      --text-primary: #E6E6E6;
+      --text-secondary: #B3B3B3;
+      --text-accent: #00FFFF;
+
+      /* Effects */
+      --glow-cyan: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
+      --glow-green: 0 0 10px #00FF41, 0 0 20px #00FF41, 0 0 30px #00FF41;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cyber-black);
+      color: var(--text-primary);
+      font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    }
+
+    .cyberpunk-slide-container {
+      background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+      position: relative;
+      z-index: 2;
+    }
+
+    .terminal-prompt {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    .slide-counter {
+      font-family: 'Courier New', 'Monaco', monospace;
+      color: var(--neon-green);
+    }
+
+    .slide-content {
+      flex: 1;
+      padding: 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .slide-title {
+      font-size: 3rem;
+      color: var(--neon-cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 1rem;
+      font-family: 'Courier New', 'Monaco', monospace;
+    }
+
+    .subtitle-accent {
+      font-size: 1.4rem;
+      color: var(--neon-amber);
+      margin-left: 0.5rem;
+    }
+
+    .prompts-overview h2,
+    .prompts-overview h3 {
+      color: var(--text-accent);
+      margin: 1.5rem 0 0.75rem;
+      font-size: 1.6rem;
+    }
+
+    .prompts-overview h3 {
+      font-size: 1.3rem;
+    }
+
+    .concept-highlight {
+      border: 2px solid var(--neon-amber);
+      background: rgba(255, 176, 0, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .code-demo {
+      background: var(--cyber-darker);
+      border: 1px solid var(--neon-green);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', monospace;
+      color: var(--neon-green);
+      position: relative;
+      overflow-x: auto;
+      font-size: 0.95rem;
+    }
+
+    .code-demo pre {
+      white-space: pre;
+    }
+
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0 2rem;
+    }
+
+    .pattern-grid h3 {
+      font-size: 1.1rem;
+      color: var(--neon-cyan);
+      margin-bottom: 0.5rem;
+    }
+
+    .pattern-grid p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .demo-section {
+      margin-top: 2rem;
+    }
+
+    .demo-section h2 {
+      color: var(--text-accent);
+    }
+
+    .demo-note {
+      border-left: 4px solid var(--neon-magenta);
+      background: rgba(255, 0, 255, 0.1);
+      padding: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+
+    .template-benefits {
+      margin-top: 2rem;
+    }
+
+    .template-benefits h2 {
+      color: var(--text-accent);
+    }
+
+    .ascii-block {
+      background: var(--cyber-darker);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      border-radius: 4px;
+      padding: 1rem 1.5rem;
+      margin: 1rem 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      overflow-x: auto;
+    }
+
+    .storage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .storage-grid h3 {
+      font-size: 1.1rem;
+      color: var(--neon-cyan);
+      margin-bottom: 0.5rem;
+    }
+
+    .storage-grid p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-top: 1px solid rgba(0, 255, 255, 0.2);
+      margin-top: 2rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .demo-ready {
+      color: var(--neon-green);
+    }
+
+    .next-indicator {
+      color: var(--neon-cyan);
+    }
+
+    .slide-navigation {
+      padding: 1rem 3rem 1.5rem;
+      border-top: 1px solid rgba(0, 255, 255, 0.2);
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: var(--cyber-dark);
+      border: 2px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 0.8rem 1.8rem;
+      font-family: 'Monaco', monospace;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
+
+    .nav-btn:hover {
+      background: var(--neon-cyan);
+      color: var(--cyber-black);
+      box-shadow: var(--glow-cyan);
+      transform: scale(1.05);
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-glow {
+      position: relative;
+      z-index: 1;
+    }
+
+    .progress-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .ascii-progress {
+      font-family: 'Courier New', monospace;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .ascii-progress .progress-bar {
+      color: var(--neon-green);
+    }
+
+    .ascii-progress .progress-percent {
+      color: var(--neon-cyan);
+      margin-left: 0.5rem;
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 255, 0.03) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      animation: scanline-move 2s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes scanline-move {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      opacity: 0.15;
+      z-index: 0;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-enter {
+      animation: slideEnter 0.6s ease-out;
+    }
+
+    @keyframes slideEnter {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .slide-content { padding: 1.5rem 3rem; }
+      .slide-title { font-size: 2.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      .slide-header { padding: 1rem 1.5rem; }
+      .slide-content { padding: 1rem 1.5rem; }
+      .slide-title { font-size: 2rem; }
+      .nav-controls { justify-content: center; }
+      .nav-btn { padding: 0.8rem 1.2rem; }
+      .slide-footer { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyberpunk-slide-container slide-enter">
+    <header class="slide-header">
+      <div class="terminal-prompt">
+        &gt; ADVANCED MCP PRESENTATION
+      </div>
+      <div class="slide-counter">
+        SLIDE <span id="current-slide">07</span>/16
+      </div>
+    </header>
+
+    <main class="slide-content fade-in">
+      <div class="slide-header">
+        <h1 class="slide-title">
+          &gt; PROMPT TEMPLATES <span class="subtitle-accent">[REUSABLE CONVERSATIONS]</span>
+        </h1>
+      </div>
+
+      <div class="prompts-overview">
+        <h2>▶ STRUCTURED CONVERSATION PATTERNS</h2>
+
+        <div class="concept-highlight">
+          <strong>Reusable structured conversations that separate prompt content from tool logic</strong>
+        </div>
+
+        <div class="code-demo">
+          <pre><code>{
+  "name": "resource_prompt",
+  "description": "Analyze resource content with dynamic arguments",
+  "arguments": [
+    {
+      "name": "resource_uri",
+      "description": "URI of the resource to analyze",
+      "required": true
+    }
+  ]
+}</code></pre>
+        </div>
+
+        <h2>▶ DYNAMIC ARGUMENT SYSTEM</h2>
+        <div class="pattern-grid">
+          <div>
+            <h3>🔗 RESOURCE INTEGRATION</h3>
+            <p>Load resources dynamically into prompts</p>
+          </div>
+          <div>
+            <h3>🎯 PARAMETERIZED TEMPLATES</h3>
+            <p>Customize prompts with runtime arguments</p>
+          </div>
+          <div>
+            <h3>💾 EXTERNAL STORAGE</h3>
+            <p>Store in config files or external systems</p>
+          </div>
+        </div>
+
+        <h2>▶ PROMPT TEMPLATE ARCHITECTURE</h2>
+        <div class="ascii-block">
+<pre><code>┌──────────────────────────────────────────────────────────────┐
+│                   PROMPT TEMPLATE SYSTEM                    │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌─────────────┐    Arguments    ┌─────────────┐            │
+│  │  TEMPLATE   │◄───────────────►│ DYNAMIC     │            │
+│  │ resource_   │                 │ RESOURCE    │            │
+│  │ prompt      │                 │ LOADER      │            │
+│  └─────────────┘                 └─────────────┘            │
+│         │                               │                   │
+│         ▼                               ▼                   │
+│  ┌─────────────┐                ┌─────────────┐            │
+│  │ RENDERED    │◄───────────────┤ RESOURCE    │            │
+│  │ CONVERSATION│                │ CONTENT     │            │
+│  └─────────────┘                └─────────────┘            │
+│                                                              │
+│  Final prompt sent to model with injected resource data     │
+└──────────────────────────────────────────────────────────────┘</code></pre>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>🎮 LIVE DEMO: RESOURCE_PROMPT TEMPLATE</h2>
+
+        <div class="demo-note">
+          <strong>DEMONSTRATION:</strong> <code>resource_prompt</code> uses dynamic argument to load a resource
+        </div>
+
+        <div class="code-demo">
+<pre><code>$ mcp-inspector
+&gt; Navigate to Prompts tab
+&gt; Select "resource_prompt" template
+&gt; Set resource_uri: "test://static/resource/42"
+
+[TEMPLATE] Loading resource_prompt template
+[ARGUMENT] resource_uri = "test://static/resource/42"
+[LOADING] Fetching resource content...
+[INJECTED] Resource data merged into prompt template
+
+Generated Conversation:
+┌─────────────────────────────────────────────┐
+│ System: Analyze the following resource data │
+│                                             │
+│ Resource URI: test://static/resource/42     │
+│ Content: {"id": 42, "timestamp": "...", ... │
+│                                             │
+│ User: Please summarize the key information  │
+│ and identify any patterns or anomalies.     │
+└─────────────────────────────────────────────┘</code></pre>
+        </div>
+
+        <h3>Key Observations:</h3>
+        <ul>
+          <li><strong>Dynamic content injection</strong> - resource loaded at runtime</li>
+          <li><strong>Template reusability</strong> - same template, different resources</li>
+          <li><strong>Argument validation</strong> - required parameters enforced</li>
+          <li><strong>Content flexibility</strong> - works with any resource type</li>
+        </ul>
+      </div>
+
+      <div class="template-benefits">
+        <h2>▶ SEPARATION OF CONCERNS</h2>
+        <div class="ascii-block">
+<pre><code>├── PROMPT LOGIC     │ Template structure and flow
+├── CONTENT SOURCE   │ Dynamic resource loading
+├── PARAMETERIZATION │ Runtime argument injection
+└── REUSABILITY      │ Multiple contexts, same template</code></pre>
+        </div>
+
+        <h2>▶ STORAGE OPTIONS</h2>
+        <div class="storage-grid">
+          <div>
+            <h3>📁 CONFIG FILES</h3>
+            <p>JSON/YAML template definitions</p>
+          </div>
+          <div>
+            <h3>🗃️ EXTERNAL SYSTEMS</h3>
+            <p>Database or CMS-managed templates</p>
+          </div>
+          <div>
+            <h3>🔄 VERSION CONTROL</h3>
+            <p>Git-tracked template evolution</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span class="demo-ready">🎮 DYNAMIC PROMPT DEMO READY</span>
+        <span class="next-indicator">▶ NEXT: Sampling - Server-Asks-Model</span>
+      </div>
+    </main>
+
+    <footer class="slide-navigation">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" onclick="window.location.href='06-resources-context'">
+          <span class="btn-glow">◀ PREV</span>
+        </button>
+
+        <div class="progress-container">
+          <div class="ascii-progress">
+            [<span class="progress-bar">███████░░░░░░░░░</span>]
+            <span class="progress-percent">44%</span>
+          </div>
+        </div>
+
+        <button class="nav-btn next-btn" onclick="window.location.href='08-sampling-model'">
+          <span class="btn-glow">NEXT ▶</span>
+        </button>
+      </div>
+    </footer>
+
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <script>
+    function navigateSlide(direction) {
+      const currentSpan = document.getElementById('current-slide');
+      let current = parseInt(currentSpan.textContent, 10) || 7;
+      if (direction === 'next') {
+        current = Math.min(16, current + 1);
+      } else if (direction === 'prev') {
+        current = Math.max(1, current - 1);
+      }
+      currentSpan.textContent = String(current).padStart(2, '0');
+
+      const progressPercentEl = document.querySelector('.progress-percent');
+      const progressBarEl = document.querySelector('.progress-bar');
+      const percent = Math.round((current / 16) * 100);
+      progressPercentEl.textContent = percent + '%';
+
+      const totalBlocks = 17;
+      const filledBlocks = Math.round((percent / 100) * totalBlocks);
+      const bar = '█'.repeat(filledBlocks) + '░'.repeat(totalBlocks - filledBlocks);
+      progressBarEl.textContent = bar;
+    }
+
+    document.addEventListener('keydown', function(e) {
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ': // space
+          navigateSlide('next');
+          break;
+        case 'ArrowLeft':
+          navigateSlide('prev');
+          break;
+      }
+    });
+  </script>
+</body>
+</html>
